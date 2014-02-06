@@ -4,6 +4,7 @@
 */
 
 #include "config.jsx"
+#include "model.jsx"
 
 var DummyPath = "C:\\dummy";
 

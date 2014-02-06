@@ -48,6 +48,12 @@ function GetTemplatePath ()
     return a + "/" + b + "/";
 }
 
+function GetModelPath ()
+{
+    var a =  $.getenv("CFG_BASE_PATH");
+    return a + "/";
+}
+
 function GetWorkPath ()
 {
     return File.decode(GetParams("WORK_DIRECTORY","C:/photoshop.cfg")+ "/");

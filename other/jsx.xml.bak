@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<work_status>
+		<ident>1</ident>
+		<component>1</component>
+		<header>1</header>
+		<option>1</option>
+		<summary>0</summary>
+	</work_status>
+	<pictures>
+		<image	id="ab1001"	name="左:藏蓝底简约皇冠 右:粉红底简约爱心"	modul="i5s"		attr="face2"	pcolor="white"	path="./org/ab_5s_face_white.jpg"/>
+		<image	id="ab1002"	name="左:藏蓝底简约皇冠 右:粉红底简约爱心"	modul="i5s"		attr="face2"	pcolor="white"	path="./org/ab_5s_face_x_white.jpg"/>
+		<image	id="ab1003"	name="左:藏蓝底简约皇冠 右:粉红底简约爱心"	modul="i4s"		attr="face2"	pcolor="white"	path="./org/ab_4s_face_white.jpg"/>
+		<image	id="ab1004"	name="左:藏蓝底简约皇冠 右:粉红底简约爱心"	modul="i4s"		attr="face2"	pcolor="white"	path="./org/ab_4s_face_black.jpg"/>
+		<image	id="ab1005"	name="左:藏蓝底简约皇冠 右:粉红底简约爱心"	modul="i5c"		attr="face2"	pcolor="white"	path="./org/ab_5c_face.jpg"/>
+		
+		<image	id="a1001"	name="藏蓝底简约皇冠"	modul="i5s"		attr="face"	pcolor="white"	path="../093藏蓝底简约皇冠/org/5s_face_white.jpg"/>
+		<image	id="a1002"	name="藏蓝底简约皇冠"	modul="i5c"		attr="face"	pcolor="white"	path="../093藏蓝底简约皇冠/org/5c_face_white.jpg"/>
+		<image	id="a1003"	name="藏蓝底简约皇冠"	modul="i4s"		attr="face"	pcolor="white"	path="../093藏蓝底简约皇冠/org/4s_face_white.jpg"/>
+		<image	id="a1004"	name="侧面细节图"		modul="i5s"		attr="side"	pcolor="white"	path="../093藏蓝底简约皇冠/org/5s_side_l_white.jpg"/>
+		<image	id="a1005"	name="侧面细节图"		modul="i5s"		attr="side"	pcolor="white"	path="../093藏蓝底简约皇冠/org/5s_side_r_white.jpg"/>
+		<image	id="a1006"	name="侧面细节图"		modul="i5s"		attr="side"	pcolor="black"	path="../093藏蓝底简约皇冠/org/5s_side_l_black.jpg"/>
+		<image	id="a1007"	name="侧面细节图"		modul="i5c"		attr="side"	pcolor="white"	path="../093藏蓝底简约皇冠/org/5c_side_l_white.jpg"/>
+		<image	id="a1008"	name="侧面细节图"		modul="i5c"		attr="side"	pcolor="white"	path="../093藏蓝底简约皇冠/org/5c_side_r_white.jpg"/>
+		<image	id="a1009"	name="侧面细节图"		modul="i4s"		attr="side"	pcolor="white"	path="../093藏蓝底简约皇冠/org/4s_side_l_white.jpg"/>
+		<image	id="a1010"	name="侧面细节图"		modul="i4s"		attr="side"	pcolor="white"	path="../093藏蓝底简约皇冠/org/4s_side_r_white.jpg"/>
+		<image	id="a1011"	name="侧面细节图"		modul="i4s"		attr="side"	pcolor="black"	path="../093藏蓝底简约皇冠/org/4s_side_l_black.jpg"/>
+		
+		
+		<image	id="b1001"	name="粉红底简约皇冠"	modul="i5s"		attr="face"	pcolor="white"	path="../094粉底简约皇冠/org/5s_face_white.jpg"/>
+		<image	id="b1002"	name="粉红底简约皇冠"	modul="i5c"		attr="face"	pcolor="white"	path="../094粉底简约皇冠/org/5c_face_white.jpg"/>
+		<image	id="b1003"	name="粉红底简约皇冠"	modul="i4s"		attr="face"	pcolor="white"	path="../094粉底简约皇冠/org/4s_face_white.jpg"/>
+		<image	id="b1004"	name="侧面细节图"		modul="i5s"		attr="side"	pcolor="white"	path="../094粉底简约皇冠/org/5s_side_l_white.jpg"/>
+		<image	id="b1005"	name="侧面细节图"		modul="i5s"		attr="side"	pcolor="white"	path="../094粉底简约皇冠/org/5s_side_r_white.jpg"/>
+		<image	id="b1006"	name="侧面细节图"		modul="i5s"		attr="side"	pcolor="black"	path="../094粉底简约皇冠/org/5s_side_l_black.jpg"/>
+		<image	id="b1007"	name="侧面细节图"		modul="i5c"		attr="side"	pcolor="white"	path="../094粉底简约皇冠/org/5c_side_l_white.jpg"/>
+		<image	id="b1008"	name="侧面细节图"		modul="i5c"		attr="side"	pcolor="white"	path="../094粉底简约皇冠/org/5c_side_r_white.jpg"/>
+		<image	id="b1009"	name="侧面细节图"		modul="i4s"		attr="side"	pcolor="white"	path="../094粉底简约皇冠/org/4s_side_l_white.jpg"/>
+		<image	id="b1010"	name="侧面细节图"		modul="i4s"		attr="side"	pcolor="white"	path="../094粉底简约皇冠/org/4s_side_r_white.jpg"/>
+		<image	id="b1011"	name="侧面细节图"		modul="i4s"		attr="side"	pcolor="black"	path="../094粉底简约皇冠/org/4s_side_l_black.jpg"/>		
+	</pictures>
+
+	<option	background="obk_1"	/>
+
+	<header attr="face2">
+		<image id="ab1001"/>
+	</header>
+	<header attr="face2">
+		<image id="ab1002"/>
+	</header>
+	
+	<mobile model="1">
+			<abstract>
+				<use_for></use_for>
+				<technics></technics>
+				<delivery></delivery >
+				<material></material>
+				
+			</abstract>
+	
+	</mobile>
+
+</config>
+
