@@ -3,26 +3,17 @@
     
 */
 
+#include "utils.jsx"
 #include "config.jsx"
+#include "image.jsx"
 #include "model.jsx"
+#include "layer.jsx"
 
 var DummyPath = "C:\\dummy";
 
 
 
 
-function output (str)
-{
-    $.writeln(str);
-}
-
-function CompareString (str1, str2)
-{
-    if (str1 == null || str2 == null)return false;
-    if (str1.length != str2.length)return false;
-    if (str1.match (str2) == null )return false;
-    return true;
-}
 
 
 
@@ -150,81 +141,11 @@ function CheckFileExists(path)
 }
 
 
-function GetAComponent (templatePath,  orgPath, targetPath, angle, type, resizeX, resizeY)
-{
-    
-    /*
-        1.打开模板文件
-        2.打开源文件，放入到模板中文件，然后关闭
-        3.通过路径建立选区
-        4.拷贝选区，并左转-14.48度
-        6.新建一个target文件
-        7.在新建的文件中，粘贴
-        8.存到targetPath中
-        */ 
-    var templateFile = new File (templatePath);
-    var templateDoc = app.open (templateFile);
-    var templateWidth = templateDoc.width.as("px");
-
-    var ret = duplicateFrom (templateDoc, orgPath, OpenDocumentType.JPEG,  "main");
-    if (ret!= true)return false;
-    
-    templateDoc.artLayers["main"].resize (  templateWidth/GetLayerWidth(templateDoc.artLayers["main"])*100, 
-                                            templateWidth/GetLayerWidth(templateDoc.artLayers["main"])*100,
-                                            AnchorPosition.TOPLEFT);
-    templateDoc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
-   
-    templateDoc.pathItems["case_path"].makeSelection (0);
-    templateDoc.selection.rotate (angle);
-    templateDoc.selection.copy (false);
-    templateDoc.paste (false).name = "end";
-    
-    for ( var i = 0; i < templateDoc.layers.length; i ++)
-    {
-        templateDoc.layers[i].visible = false;
-    }
-
-    templateDoc.layers["end"].visible = true;
-    templateDoc.trim (TrimType.TRANSPARENT);
-
-    if (resizeX == null)    
-        templateDoc.resizeImage (new UnitValue(50, "%"),new UnitValue(50, "%"),72);
-    else
-        templateDoc.resizeImage (resizeX,resizeY,72);
-    
-    var targetFile = new File (targetPath);
-
-    if (CompareString(type,"JPEG"))
-        templateDoc.saveAs(targetFile, GetJPGParam(), true);
-    else
-        templateDoc.saveAs(targetFile, GetPNGParam(), true);
-
-    CloseDoc (templateDoc);       
-}
-
-function GetAComponentWithShadow(orgPath, targetPath)
-{
-        $.writeln("GetAHead Enter:");
-        var orgFile = new File (orgPath);
-        var orgDoc = app.open (orgFile);
-        var orgHeight = orgDoc.height;
-        var orgWidth = orgDoc.width;
-        orgDoc.resizeCanvas ( orgWidth, orgHeight*2,  AnchorPosition.TOPCENTER);
-        orgDoc.activeLayer.duplicate ().name = "shadow";
-        orgDoc.artLayers["shadow"].resize (-100, 100);
-        orgDoc.artLayers["shadow"].rotate (180, AnchorPosition.BOTTOMCENTER);
-        orgDoc.artLayers["shadow"].opacity = 40;
-        
-        orgDoc.resizeCanvas ( orgWidth, orgHeight*2*52/100,  AnchorPosition.TOPCENTER);
-        var targetFile = new File (targetPath);
-        orgDoc.saveAs(targetFile, GetPNGParam(), true);
-        CloseDoc (orgDoc); 
- }
 
 
 function AdjustPicPosition (templateFile, orgFile, targetFile)
 {
-    }
+}
 
 
 function GetParamsChild (baseParam)
@@ -247,84 +168,7 @@ function GetParamsChild (baseParam)
     return a ;
 }
 
-function ErrorOut (err)
-{
-    alert (err);
-}
 
-function duplicateFrom (selfDoc, srcPath,srcType, layerName)
-{
-    try{
-        var srcFile = new File (srcPath);
-        var srcDoc = app.open (srcFile, srcType, true);  
-        srcDoc.activeLayer.duplicate(selfDoc, ElementPlacement.PLACEATBEGINNING);
-        CloseDoc (srcDoc)
-        selfDoc.activeLayer.name = layerName;
-        return true;
-    }catch (err)
-    {
-        ErrorOut("Error Code" + err +"\n" +
-               "srcPath:" + srcPath + "\n");
-        return false;        
-    }
-}
-
-function GetBoundsWidth (bounds)
-{
-    return bounds[2].as("px") - bounds[0].as("px");
-}
-
-function GetBoundsHeight (bounds)
-{
-    return bounds[3].as("px") - bounds[1].as("px");
-}
-
-
-function GetLayerWidth (layer)
-{
-      return GetBoundsWidth(layer.bounds);
-}
-
-function GetLayerHeight (layer)
-{
-      return GetBoundsHeight(layer.bounds);   
-}
-
-function GetLayerTopLeftX (layer)
-{
-    return layer.bounds[0].as("px");
-}
-
-function GetLayerTopLeftY (layer)
-{
-    return layer.bounds[1].as("px");
-}
-
-function resizeLayerToRegion ()
-{
-   
-}
-
-function HorzMiddleLayerByLayer (doc, refLayerName, adjustLayerName)
-{
-    var refLayerWidth = GetLayerWidth (doc.artLayers[refLayerName]);
-    var adjustLayerWidth = GetLayerWidth (doc.artLayers[adjustLayerName]);
-
-    if (adjustLayerWidth > refLayerWidth){
-        doc.artLayers[adjustLayerName].resize(refLayerWidth/adjustLayerWidth*100, refLayerWidth/adjustLayerWidth*100, AnchorPosition.TOPLEFT);
-        adjustLayerWidth = refLayerWidth;
-    }
-    var x =GetLayerTopLeftX (doc.artLayers[refLayerName]) + (refLayerWidth - adjustLayerWidth)/2;
-    doc.artLayers[adjustLayerName].translate (new UnitValue(x, "px") - new UnitValue (GetLayerTopLeftX (doc.artLayers[adjustLayerName]),"px"));
-    
-    
- }
-
-function SetTextLayerContexts (doc, name, contexts)
-{
-    if (CheckLayerExist (doc, name))
-        doc.artLayers[name].textItem.contents = contexts;   
-}
 
 function GetIndexFromImageString (tag)
 {
@@ -342,60 +186,6 @@ function GetIndexFromImageString (tag)
 }
 
 
-/*
-function BuildMainPicture ()
-{
-        var srcArray = GetParamsChild ("MAIN_CHILD_");
-        var templatePath = GetTemplateBase() + GetParams ("HEAD_TMP_PATH");
-        var templateFile = new File (templatePath);
-        var templateDoc = app.open (templateFile);
-
-        for (var i = 0; i < srcArray.length; i ++)
-        {
-                if (null == srcArray[i])continue;
-                var index = GetIndexFromImageString (srcArray[i]);
-                duplicateFrom (templateDoc, GetPathByIndex_ComponentWithShadow (index), OpenDocumentType.PNG, "child_" + i);
-                templateDoc.activeLayer.translate(  new UnitValue(templateDoc.artLayers["pic_" + i].bounds[0].as("px"),"px"), 
-                                                    new UnitValue(templateDoc.artLayers["pic_" + i].bounds[1].as("px"),'px'));
-                var targetHeight = GetLayerHeight (templateDoc.artLayers["pic_" + i]);
-                var targetWidth = GetLayerWidth (templateDoc.artLayers["pic_" + i]);
-                var orgHeight = GetLayerHeight (templateDoc.activeLayer);
-                var orgWidth = GetLayerWidth (templateDoc.activeLayer);
-                templateDoc.activeLayer.resize(targetWidth/orgWidth*100, targetWidth/ orgWidth*100, AnchorPosition.TOPLEFT);
-                templateDoc.artLayers["pic_" + i].visible = false;                
-        }
-        SetTextLayerContexts (templateDoc, "model", GetParams ("MODEL"));
-        SetTextLayerContexts (templateDoc, "desp_top", GetParams ("DESP_TOP"));
-        SetTextLayerContexts (templateDoc, "desp_bottom", GetParams ("DESP_BOTTOM"));  
-        HorzMiddleLayerByLayer (templateDoc, "desp_area", "model");
-        HorzMiddleLayerByLayer (templateDoc, "desp_area", "desp_top");
-        HorzMiddleLayerByLayer (templateDoc, "desp_area", "desp_bottom");
-
-        var targetFile = new File (GetPath_HeadPicture ());
-        templateDoc.saveAs(targetFile, GetJPGParam(), true);
-        CloseDoc (templateDoc); 
-}
-*/
-
-function GetDocumentLayerNum (doc, key)
-{
-    var num = 0
-    for (var i = 0 ; i < doc.layers.length ; i ++)
-    {
-        var str = doc.layers[i].name;
-        if (str.indexOf (key) == 0 )num ++;
-    }
-    return num;
-
-
-}
-
-function CheckLayerExist (doc, name)
-{
-    for (var i =0; i < doc.artLayers.length; i ++ )
-        if (CompareString(doc.artLayers[i].name, name))return true;
-    return false;  
-}
 
 function BuildMainPictureByIndex (templateDoc, array, index)
 {
@@ -576,131 +366,6 @@ function GetPictrueName ()
     return name;
 }
 
-function GetTargetPathInfo (imageInfo)
-{
-    var path = new Object ();
-    if (CompareString(imageInfo.attr, "face"))
-    {
-        path.desp = GetOutputPathBase() + "/desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        path.compent = GetOutputPathBase() + "/component/" + imageInfo["modul"] + "_" + imageInfo["name"] + "_0.png";
-        path.compentWithShadow = GetOutputPathBase() + "/component/" + imageInfo["modul"] + "_" + imageInfo["name"] + "_1.png";
-        path.option_400 = GetOutputPathBase() + "/head/400/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
-        path.option_800= GetOutputPathBase() + "/head/800/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
-        return path;
-    }
-    if (CompareString(imageInfo.attr, "face2"))
-    {
-        path.desp = GetOutputPathBase() + "/desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        return path;
-    }
-    if (CompareString(imageInfo.attr, "side"))
-    {
-        path.desp = GetOutputPathBase() + "/desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        return path;
-    }
-
-}
-
-function ParseImageInfo (image)
-{
-    var imageInfo = new Object();
-    var tempateInfo = GetTemplateInfoX();
-
-    imageInfo.path = GetBasePath() + image.@path.toString();
-    imageInfo.id = image.@id.toString();
-    imageInfo.name = image.@name.toString();
-    imageInfo.modul = image.@modul.toString();
-    imageInfo.attr = image.@attr.toString();
-    imageInfo.templatePath = tempateInfo[imageInfo.modul];
-    imageInfo.targetPath = GetTargetPathInfo(imageInfo);
-    if (CompareString(imageInfo.attr,"face"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp;
-    if (CompareString(imageInfo.attr,"face2"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp2;
-    if (CompareString(imageInfo.attr,"side"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp_side;
-    return imageInfo;
-}
-
-
-
-function GetImageInfo ()
-{
-    var config = new XML (GetConfigXML());
-    var images = config.pictures.image;
-    var n = images.length() ;
-    var imageArray = new Array ();
-    for (var i = 0; i < n; i ++)
-    {
-        var imageInfo = ParseImageInfo(images[i]);
-        imageArray.push (imageInfo);
-    }    
-    return imageArray;
-}
-
-function GetImageInfoByAttr (attr)
-{
-    var image = GetImageInfo ();
-    var imageResult = new Array ();
-    for (var i = 0 ; i < image.length; i ++){
-        if (CompareString(image[i].attr,attr))imageResult.push (image[i]);
-    }
-    return imageResult;
-}
-
-function GetImageInfoByID(id)
-{
-    var imageInfo = GetImageInfo ();
-    for (var i = 0; i < imageInfo.length; i ++)
-    {
-        if (CompareString(imageInfo[i].id,id))return imageInfo[i];
-    }
-    return null;    
-}
-
-
-function GetTemplateInfoX ()
-{
-    var modulArray = new Array ();
-    var config = new XML (GetTemplateConfig ());
-    var tmplate = config.child ("tmplates").child("tmplate");
-    
-    for  (var i = 0; i < tmplate.length(); i ++)
-    {
-        var path = new Object();
-        if (0 != tmplate[i].child("mask").length())
-            path ["mask"] = GetTemplateBase() + tmplate[i].child("mask").toString();
-        if (0 != tmplate[i].child("desp").length())
-            path ["desp"] = GetTemplateBase() + tmplate[i].child("desp").toString();
-        if (0 != tmplate[i].child("desp2").length())
-            path ["desp2"] = GetTemplateBase() + tmplate[i].child("desp2").toString();
-        if (0 != tmplate[i].child("desp_side").length())
-            path ["desp_side"] = GetTemplateBase() + tmplate[i].child("desp_side").toString();
-        if (0 != tmplate[i].child("main").length())
-            path ["main"] = GetTemplateBase() + tmplate[i].child("main").toString();
-        if (0 != tmplate[i].child("fmain").length())
-            path ["fmain"] = GetTemplateBase() + tmplate[i].child("fmain").toString();
-        if (0 != tmplate[i].child("option").length())
-            path ["option"] = GetTemplateBase() + tmplate[i].child("option").toString();
-        if (0 != tmplate[i].child("ident").length())
-            path ["ident"] = GetTemplateBase() + tmplate[i].child("ident").toString();
-        if (0 != tmplate[i].child("summary").length())
-            path ["summary"] = GetTemplateBase() + tmplate[i].child("summary").toString();
-        if (0 != tmplate[i].child("use_for").length())
-            path ["use_for"] = tmplate[i].child("use_for").toString();
-        else
-            path ["use_for"]="";
-        modulArray[tmplate[i].@model.toString()]= path;
-    }
-    
-    return  modulArray;   
-}
-
-
-function GetUseForByImageInfo (imageInfo)
-{
-    return imageInfo["template"]["use_for"];
-}
 
 function GetAHeaderInfoX (header)
 {
@@ -952,7 +617,7 @@ function IdentAPicByImageInfo (imageInfo)
 
 }
 
-function GatComponentByConfig()
+function GetComponentByConfig()
 {
     var imageInfo = GetImageInfoByAttr ("face");
     for (var i=0; i < imageInfo.length; i ++ )
@@ -1010,13 +675,16 @@ function work()
     var config = new XML (GetConfigXML());
     var w = config.work_status[0];
     if (CompareString(w.ident.toString(),"1"))IdentPicByConfig ();
-    if (CompareString(w.component.toString(),"1"))GatComponentByConfig ();
+    if (CompareString(w.component.toString(),"1"))GetComponentByConfig ();
     if (CompareString(w.header.toString(),"1")) BuildMainPicture();
     if (CompareString(w.option.toString(),"1"))BuildAllOptionPicture();
     if (CompareString(w.summary.toString(),"1"))BuildSummary ();
 }
 
 InitAll ();
-work();
+
+BuildDetailByConfig()
+
+//work();
 //test ();
 

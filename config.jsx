@@ -51,7 +51,7 @@ function GetTemplatePath ()
 function GetModelPath ()
 {
     var a =  $.getenv("CFG_BASE_PATH");
-    return a + "/";
+    return a + "/model/";
 }
 
 function GetWorkPath ()
@@ -86,6 +86,8 @@ function InitAll()
     var f = new Folder (GetOutputPathBase ());
     f.create ();    
     var f = new Folder (GetOutputPathBase() + "./component");
+    f.create();
+    var f = new Folder (GetOutputPathBase() + "./detail_component");
     f.create();
     var f = new Folder (GetOutputPathBase() + "./desp");
     f.create();
