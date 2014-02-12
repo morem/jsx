@@ -148,6 +148,7 @@ desp        index
 */
 function BuildDetailByConfig()
 {
+    //GetDetailComponent();
     var detailArray = GetMobileDetailInfo ();
     for (var i =0; i < detailArray.length; i ++){
         BuildADetail (detailArray[i]);

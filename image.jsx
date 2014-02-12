@@ -1,3 +1,21 @@
+function GetPNGParam ()
+{
+        var t = new PNGSaveOptions();
+        t.interlaced = false;
+        return t;    
+}
+
+function GetJPGParam()
+{
+    var jpgParam = new JPEGSaveOptions();
+    jpgParam.embedColorProfile = true;
+    jpgParam.format = FormatOptions.OPTIMIZEDBASELINE;
+    jpgParam.matte = MatteType.NONE;
+    jpgParam.quality = 6;
+    jpgParam.scans = 3;       
+    return jpgParam;        
+}
+
 
 function GetTargetPathInfo (imageInfo)
 {
@@ -5,6 +23,7 @@ function GetTargetPathInfo (imageInfo)
     if (CompareString(imageInfo.attr, "face"))
     {
         path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
         path.compent = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["name"] + "_0.png";
         path.compentWithShadow = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["name"] + "_1.png";
         path.option_400 = GetOutputPathBase() + "./head/400/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
@@ -14,11 +33,14 @@ function GetTargetPathInfo (imageInfo)
     if (CompareString(imageInfo.attr, "face2"))
     {
         path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
         return path;
     }
-    if (CompareString(imageInfo.attr, "side"))
+    if (CompareString(imageInfo.attr, "side") ||
+        CompareString(imageInfo.attr, "show"))
     {
         path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp_m = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
         return path;
     }
     if (CompareString(imageInfo.attr, "detail"))
@@ -31,44 +53,6 @@ function GetTargetPathInfo (imageInfo)
 
 }
 
-function GetTemplateInfoX ()
-{
-    var modulArray = new Array ();
-    var config = new XML (GetTemplateConfig ());
-    var tmplate = config.child ("tmplates").child("tmplate");
-    
-    for  (var i = 0; i < tmplate.length(); i ++)
-    {
-        var path = new Object();
-        if (0 != tmplate[i].child("mask").length())
-            path ["mask"] = GetTemplateBase() + tmplate[i].child("mask").toString();
-        if (0 != tmplate[i].child("desp").length())
-            path ["desp"] = GetTemplateBase() + tmplate[i].child("desp").toString();
-        if (0 != tmplate[i].child("desp2").length())
-            path ["desp2"] = GetTemplateBase() + tmplate[i].child("desp2").toString();
-        if (0 != tmplate[i].child("desp_side").length())
-            path ["desp_side"] = GetTemplateBase() + tmplate[i].child("desp_side").toString();
-        if (0 != tmplate[i].child("main").length())
-            path ["main"] = GetTemplateBase() + tmplate[i].child("main").toString();
-        if (0 != tmplate[i].child("fmain").length())
-            path ["fmain"] = GetTemplateBase() + tmplate[i].child("fmain").toString();
-        if (0 != tmplate[i].child("option").length())
-            path ["option"] = GetTemplateBase() + tmplate[i].child("option").toString();
-        if (0 != tmplate[i].child("ident").length())
-            path ["ident"] = GetTemplateBase() + tmplate[i].child("ident").toString();
-        if (0 != tmplate[i].child("summary").length())
-            path ["summary"] = GetTemplateBase() + tmplate[i].child("summary").toString();
-        if (0 != tmplate[i].child("detail").length())
-            path ["detail"] = GetTemplateBase() + tmplate[i].child("detail").toString();
-        if (0 != tmplate[i].child("use_for").length())
-            path ["use_for"] = tmplate[i].child("use_for").toString();
-        else
-            path ["use_for"]="";
-        modulArray[tmplate[i].@model.toString()]= path;
-    }
-    
-    return  modulArray;   
-}
 
 
 function ParseImageInfo (image)
@@ -83,16 +67,22 @@ function ParseImageInfo (image)
     imageInfo.attr = image.@attr.toString();
     imageInfo.templatePath = tempateInfo[imageInfo.modul];
     imageInfo.targetPath = GetTargetPathInfo(imageInfo);
-    if (CompareString(imageInfo.attr,"face"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp;
-    if (CompareString(imageInfo.attr,"face2"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp2;
-    if (CompareString(imageInfo.attr,"side"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp_side;
     
-    if (CompareString(imageInfo.attr,"detail"))
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].detail;
+    if (CompareString(imageInfo.attr,"face") ||
+        CompareString(imageInfo.attr,"face2") ||
+        CompareString(imageInfo.attr,"side") ||
+        CompareString(imageInfo.attr,"show"))
+    {
+        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp;
+        imageInfo.despTemplatePath_mobile = tempateInfo[imageInfo.modul].desp_mobile;
+    }
 
+    if (CompareString(imageInfo.attr,"detail"))
+    {
+        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].detail;
+        imageInfo.despTemplatePath_mobile = tempateInfo[imageInfo.modul].desp_mobile;
+    }
+    
     return imageInfo;
 }
 

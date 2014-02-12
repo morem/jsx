@@ -17,23 +17,6 @@ var DummyPath = "C:\\dummy";
 
 
 
-function GetPNGParam ()
-{
-        var t = new PNGSaveOptions();
-        t.interlaced = false;
-        return t;    
-}
-
-function GetJPGParam()
-{
-    var jpgParam = new JPEGSaveOptions();
-    jpgParam.embedColorProfile = true;
-    jpgParam.format = FormatOptions.OPTIMIZEDBASELINE;
-    jpgParam.matte = MatteType.NONE;
-    jpgParam.quality = 6;
-    jpgParam.scans = 3;       
-    return jpgParam;        
-}
 
 
 function CloseDoc (doc)
@@ -615,6 +598,13 @@ function IdentAPicByImageInfo (imageInfo)
                 imageInfo.name,
                 imageInfo.templatePath.use_for);
 
+    IdentAPic ( imageInfo.despTemplatePath_mobile,
+                imageInfo.templatePath.ident,
+                imageInfo.path,
+                imageInfo.targetPath.desp_mobile,
+                imageInfo.name,
+                imageInfo.templatePath.use_for);
+
 }
 
 function GetComponentByConfig()
@@ -638,7 +628,7 @@ function IdentPicByConfig()
 
 function GetSummaryTargetPath (tag)
 {
-    return GetBasePath() + "./desp/" + "summary" + "_" + tag + ".jpg";
+    return GetOutputPathBase() + "./desp/" + "summary" + "_" + tag + ".jpg";
 }
 
 function GetSummaryInfo ()
@@ -683,8 +673,9 @@ function work()
 
 InitAll ();
 
-BuildDetailByConfig()
 
-//work();
+//BuildDetailByConfig()
+
+work();
 //test ();
 
