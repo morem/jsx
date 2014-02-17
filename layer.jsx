@@ -65,20 +65,6 @@ function SetTextLayerContexts (doc, name, contexts)
         doc.artLayers[name].textItem.contents = contexts;   
 }
 
-function HorzMiddleLayerByLayer (doc, refLayerName, adjustLayerName)
-{
-    var refLayerWidth = GetLayerWidth (doc.artLayers[refLayerName]);
-    var adjustLayerWidth = GetLayerWidth (doc.artLayers[adjustLayerName]);
-
-    if (adjustLayerWidth > refLayerWidth){
-        doc.artLayers[adjustLayerName].resize(refLayerWidth/adjustLayerWidth*100, refLayerWidth/adjustLayerWidth*100, AnchorPosition.TOPLEFT);
-        adjustLayerWidth = refLayerWidth;
-    }
-    var x =GetLayerTopLeftX (doc.artLayers[refLayerName]) + (refLayerWidth - adjustLayerWidth)/2;
-    doc.artLayers[adjustLayerName].translate (new UnitValue(x, "px") - new UnitValue (GetLayerTopLeftX (doc.artLayers[adjustLayerName]),"px"));
-    
-    
-}
 
 function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
 {

@@ -112,6 +112,11 @@ function GetTemplateInfoX ()
             path ["abstract"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "abstract")
         }
         
+        if (CompareString(tmplate[i].@model.toString(),"detail")){
+            path ["detail_a"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "detail_a")
+            path ["detail_b"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "detail_b")
+        }
+        
         path ["mask"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "mask");
         path ["desp"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "desp");
         path ["desp_mobile"]= GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "desp_mobile");
@@ -189,10 +194,19 @@ function GetConfigFileContent ()
 
 function GetConfigXML ()
 {
-    var path = GetWorkPath() + "jsx.xml"
+    var path = GetWorkPath() + "./jsx.xml"
     var content = GetAFileContent (path);
     return content;
 }
+
+function GetDetailConfigXML ()
+{
+    var path = GetWorkPath() + "./jsx_detail.xml"
+    var content = GetAFileContent (path);
+    return content;
+}
+
+
 function GetTemplateConfig ()
 {
     var path = GetTemplateBase() + "path.xml"

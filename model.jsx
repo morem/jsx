@@ -74,49 +74,55 @@ function GetDetailComponent ()
 function ParseDetailInfo (detail)
 {
     var detailInfo = new Object();
-    detailInfo.id = detail.@id.toString();
-    detailInfo.index = detail.@index.toString();
-    detailInfo.template = detail.@template.toString();
-    detailInfo.title = detail.@title.toString();
-    detailInfo.desp = detail.@desp.toString();
+    detailInfo.path = GetWorkPath() + detail.path.toString();
+    detailInfo.index = detail.index.toString();
+    detailInfo.title = detail.title.toString();
+    detailInfo.desp = detail.desp.toString();
 
     var imageInfo = GetImageInfoByID (detailInfo.id);
-    
-    detailInfo.path_a = imageInfo.targetPath[pathNameToTargetName("path_a")];
-    detailInfo.path_b = imageInfo.targetPath[pathNameToTargetName("path_b")];
-    detailInfo.path_c = imageInfo.targetPath[pathNameToTargetName("path_c")];
-
     detailInfo.targetPath = GetOutputPathBase() + "./desp/detail_" + detailInfo.index + ".png";
     return detailInfo;
 }
 
 
+function GetDetailPath (index)
+{
+    var path = GetTemplateInfoX ();
 
-function GetMobileDetailInfo (){
-    var config = new XML (GetConfigXML());
-    var details = config.mobile.detail;
+    if (index%2 == 0)
+        return path["detail"] ["detail_a"];
+    else
+        return path["detail"] ["detail_b"];
+
+}
+
+
+function GetDetailInfo (){
+    var detailsXML = new XML (GetDetailConfigXML());
+    var details = detailsXML.detail;
     var detailArray = new Array();
     for (var i = 0; i < details.length(); i ++)
     {
         var detailInfo = ParseDetailInfo (details[i]);
-        detailInfo.templatePath = GetModelPath() + config.mobile.@model.toString() + "/" + detailInfo.template;
+        detailInfo.templatePath = GetDetailPath (i);
         detailArray.push (detailInfo);
     }
     return detailArray;
 }
 
 
-function loadCompentToPath (doc, srcPath, name)
+function loadCompent (doc, srcPath, refLayer, name)
 {
     duplicateFrom(doc,srcPath,OpenDocumentType.PNG, name);
-    doc.artLayers[name].translate( new UnitValue(doc.artLayers[name+"_area"].bounds[0].as("px"),"px"), 
-                                new UnitValue(doc.artLayers[name+"_area"].bounds[1].as("px"),'px'));
-    var targetHeight = GetLayerHeight (doc.artLayers[name+"_area"]);
-    var targetWidth = GetLayerWidth (doc.artLayers[name+"_area"]);
-    var orgHeight = GetLayerHeight (doc.artLayers[name]);
-    var orgWidth = GetLayerWidth (doc.artLayers[name]);
-    doc.activeLayer.resize(targetWidth/orgWidth*100, targetWidth/ orgWidth*100, AnchorPosition.TOPLEFT);
-    doc.artLayers[name].move ( doc.artLayers["background"], ElementPlacement.PLACEBEFORE);
+    var layer = doc.artLayers[name];
+    layer.translate( new UnitValue(refLayer.bounds[0].as("px"),"px"), 
+                                   new UnitValue(refLayer.bounds[1].as("px"),'px'));
+    var targetHeight = GetLayerHeight (refLayer);
+    var targetWidth = GetLayerWidth (refLayer);
+    var orgHeight = GetLayerHeight (layer);
+    var orgWidth = GetLayerWidth (layer);
+    layer.resize(targetWidth/orgWidth*100, targetHeight/ orgHeight*100, AnchorPosition.TOPLEFT);
+    layer.move ( doc.artLayers["background"], ElementPlacement.PLACEBEFORE);
 
 }
 
@@ -124,10 +130,8 @@ function BuildADetail(detailInfo)
 {
     var templateFile = new File (detailInfo.templatePath);
     var doc = app.open (templateFile);
-    var pathNum =  doc.pathItems.length;
 
-    for (var i = 0; i < pathNum; i ++)
-        loadCompentToPath (doc, detailInfo[doc.pathItems[i].name], doc.pathItems[i].name);
+    loadCompent(doc,detailInfo.path,doc.layers["picture"],"src");
 
     SetTextLayerContexts (doc, "index", detailInfo.index);
     SetTextLayerContexts (doc, "desp", detailInfo.desp);
@@ -149,8 +153,9 @@ desp        index
 function BuildDetailByConfig()
 {
     //GetDetailComponent();
-    var detailArray = GetMobileDetailInfo ();
+    var detailArray = GetDetailInfo ();
     for (var i =0; i < detailArray.length; i ++){
         BuildADetail (detailArray[i]);
     }
 }
+
