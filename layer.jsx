@@ -80,6 +80,44 @@ function HorzMiddleLayerByLayer (doc, refLayerName, adjustLayerName)
     
 }
 
+function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
+{
+    var refLayerWidth = GetLayerWidth (refArtLayer);
+    var adjustLayerWidth = GetLayerWidth (adujstArtLayer);
+
+    if (adjustLayerWidth > refLayerWidth){
+        adujstArtLayer.resize(refLayerWidth/adjustLayerWidth*100, refLayerWidth/adjustLayerWidth*100, AnchorPosition.TOPLEFT);
+        adjustLayerWidth = refLayerWidth;
+    }
+    var x =GetLayerTopLeftX (refArtLayer) + (refLayerWidth - adjustLayerWidth)/2;
+    adujstArtLayer.translate (new UnitValue(x, "px") - new UnitValue (GetLayerTopLeftX (adujstArtLayer),"px"));
+}
+
+
+
+function HorzLeftLayerByLayer (doc , refArtLayer, adujstArtLayer)
+{
+    var refLayerWidth = GetLayerWidth (refArtLayer);
+    var adjustLayerWidth = GetLayerWidth (adujstArtLayer);
+
+    if (adjustLayerWidth > refLayerWidth){
+        adujstArtLayer.resize(refLayerWidth/adjustLayerWidth*100, refLayerWidth/adjustLayerWidth*100, AnchorPosition.TOPLEFT);
+        adjustLayerWidth = refLayerWidth;
+    }
+    
+    var x =GetLayerTopLeftX (refArtLayer) + (refLayerWidth - adjustLayerWidth)/2;
+    adujstArtLayer.translate (new UnitValue(x, "px") - new UnitValue (GetLayerTopLeftX (adujstArtLayer),"px"));
+}
+
+function VerLayerPosition (doc, refArtLayer, adjustArtLayer, index, times)
+{
+    var refLayerHeight = GetLayerHeight(refArtLayer);
+
+    adjustArtLayer.translate (new UnitValue(0, "px"),
+                              new UnitValue(refLayerHeight*index* times, "px"));
+}
+
+
 function duplicateFrom (selfDoc, srcPath,srcType, layerName)
 {
     try{

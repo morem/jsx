@@ -1,3 +1,6 @@
+var DummyPath = "C:\\dummy";
+
+
 function output (str)
 {
     $.writeln(str);
@@ -15,4 +18,14 @@ function ErrorOut (err)
 {
     alert (err);
 }
+
+
+
+function CloseDoc (doc)
+{
+    var fdummy = new File (DummyPath);
+    doc.saveAs (fdummy);
+    doc.close ();
+}
+
 

@@ -9,22 +9,6 @@
 #include "model.jsx"
 #include "layer.jsx"
 
-var DummyPath = "C:\\dummy";
-
-
-
-
-
-
-
-
-
-function CloseDoc (doc)
-{
-    var fdummy = new File (DummyPath);
-    doc.saveAs (fdummy);
-    doc.close ();
-}
 
 
 function GetAllTargetPath(type)
@@ -288,52 +272,6 @@ function BuildAllPic (summaryInfo,bShadow)
     
 }
 
-
-function GetAFileContent (path)
-{
-    var file = new File (path);
-    file.open ("r");
-    var str = file.read(); 
-    file.close ();
-    return str; 
-}
-
-function GetConfigFileContent ()
-{
-    var path = GetWorkPath() + "jsx.xml"
-    var content = GetAFileContent (path);
-    //output (content);
-    var g_config = new XML (content);
-    var x = g_config.child ("faces");
-    var c =  x.child(0);
-    var lc=c.length();
-    var d =  x.child(1);
-    var ld=d.length();
-     var t = d.children ();
-     var tn = t[0].@path.toString();
-     var tn1 = t[1];
-     var tn2 = t[2];
-
-     var tt = t.length();
-    output (tn);
-    var e =  x.child(2);
-    var le=e.length();
-
-    var t = 0;
-}
-
-function GetConfigXML ()
-{
-    var path = GetWorkPath() + "jsx.xml"
-    var content = GetAFileContent (path);
-    return content;
-}
-function GetTemplateConfig ()
-{
-    var path = GetTemplateBase() + "path.xml"
-    var content = GetAFileContent (path);
-    return content;
-}
 
 function GetPictrueName ()
 {

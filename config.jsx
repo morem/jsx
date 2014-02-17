@@ -1,4 +1,4 @@
-
+﻿
 function GetParams(a, filePath)
 {
     var cfg_file;
@@ -90,6 +90,14 @@ function GetTemplateInfoX_ (tmplate, i, name)
         return tmplate[0].child(name).toString();
 }
 
+
+function GetGlobelModel()
+{
+    var modulArray = new Array ();
+    var config = new XML (GetConfigXML ());
+    return config.work_status.model.toString ();
+}
+
 function GetTemplateInfoX ()
 {
     var modulArray = new Array ();
@@ -99,6 +107,11 @@ function GetTemplateInfoX ()
     for  (var i = 0; i < tmplate.length(); i ++)
     {
         var path = new Object();
+        if (CompareString(tmplate[i].@model.toString(),"abstract")){
+            path ["config"]     = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "config")
+            path ["abstract"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "abstract")
+        }
+        
         path ["mask"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "mask");
         path ["desp"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "desp");
         path ["desp_mobile"]= GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "desp_mobile");
@@ -109,11 +122,82 @@ function GetTemplateInfoX ()
         path ["summary"]    = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "summary");
         path ["detail"]     = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "detail");
         path ["use_for"]    = GetTemplateInfoX_ (tmplate, i , "use_for");
-        path ["use_for_detail"] = GetTemplateInfoX_ (tmplate, i , "use_for_detail");       
+        path ["use_for_detail"] = GetTemplateInfoX_ (tmplate, i , "use_for_detail");
+        
         modulArray[tmplate[i].@model.toString()] = path;
+
     }
     
     return  modulArray;   
+}
+
+
+function GetAbstractInfo( version)
+{
+    var config = new XML (GetTemplateConfig ());
+    var tmplate = config.child ("tmplates").child("tmplate");
+    var templateInfo = GetTemplateInfoX ();
+    var model = GetGlobelModel();
+    var pathArray = templateInfo[model];
+    for  (var i = 0; i < tmplate.length(); i ++)
+    {
+        var path = new Object();
+        if (CompareString(tmplate[i].@model.toString(),"abstract")){
+             pathArray ["config"]     = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "config")
+             pathArray ["abstract"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "abstract")
+            break;
+        }
+    }
+
+    return  pathArray;
+}
+
+
+
+function GetAFileContent (path)
+{
+    var file = new File (path);
+    file.open ("r");
+    var str = file.read(); 
+    file.close ();
+    return str; 
+}
+
+function GetConfigFileContent ()
+{
+    var path = GetWorkPath() + "jsx.xml"
+    var content = GetAFileContent (path);
+    //output (content);
+    var g_config = new XML (content);
+    var x = g_config.child ("faces");
+    var c =  x.child(0);
+    var lc=c.length();
+    var d =  x.child(1);
+    var ld=d.length();
+     var t = d.children ();
+     var tn = t[0].@path.toString();
+     var tn1 = t[1];
+     var tn2 = t[2];
+
+     var tt = t.length();
+    output (tn);
+    var e =  x.child(2);
+    var le=e.length();
+
+    var t = 0;
+}
+
+function GetConfigXML ()
+{
+    var path = GetWorkPath() + "jsx.xml"
+    var content = GetAFileContent (path);
+    return content;
+}
+function GetTemplateConfig ()
+{
+    var path = GetTemplateBase() + "path.xml"
+    var content = GetAFileContent (path);
+    return content;
 }
 
 

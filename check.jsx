@@ -14,15 +14,6 @@ function checkImageInfo ()
 function checkConfigFile ()
 {
     if (!checkImageInfo ())return false;
-
-
-
-
-
-
-
-
-
 }
 
 
