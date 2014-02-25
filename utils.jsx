@@ -1,4 +1,4 @@
-var DummyPath = "C:\\dummy";
+﻿var DummyPath = "C:\\dummy";
 
 
 function output (str)
@@ -28,4 +28,55 @@ function CloseDoc (doc)
     doc.close ();
 }
 
+function Utils_GetMin (a,b)
+{
+    if (a > b)return b;
+    else return a;
+}
+
+function Utils_GetMax (a,b)
+{
+    if (a > b)return a;
+    else return b;
+}
+
+
+function Utils_GetDirectoryPathFromPath (path)
+{
+    if (-1 == path.lastIndexOf("/") && -1 == path.lastIndexOf("\\"))return null;
+    var pos = Utils_GetMax (path.lastIndexOf("/"), path.lastIndexOf("\\"));
+    return path.slice (0, pos);
+    
+}
+
+function Utils_GetFileNameNoExtFromPath (path)
+{
+    var slashPos = Utils_GetMax (path.lastIndexOf("/"), path.lastIndexOf("\\"));
+    if (slashPos < 0)slashPos = 0;
+    else slashPos = slashPos + 1;
+    var dotPos = path.lastIndexOf(".");
+    if (dotPos < 0)dotPos = 1000;
+    return path.slice (slashPos, dotPos);
+}
+
+function Utils_GetFileNameFromPath (path)
+{
+    var slashPos = Utils_GetMax (path.lastIndexOf("/"), path.lastIndexOf("\\"));
+    if (slashPos < 0)slashPos = 0;
+    else slashPos = slashPos + 1;
+    return path.slice (slashPos);
+}
+
+function Utils_GetFileExtFromPath (path)
+{
+    var dotPos = path.lastIndexOf(".");
+    return path.slice (dotPos+1);
+}
+
+function Utils_GetFilePathSlave (path, index)
+{
+    return  Utils_GetDirectoryPathFromPath(path) + "/" +
+            Utils_GetFileNameNoExtFromPath (path) + "_" + index + "." +
+            Utils_GetFileExtFromPath (path);
+}
 

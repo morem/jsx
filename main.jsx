@@ -8,7 +8,9 @@
 #include "image.jsx"
 #include "model.jsx"
 #include "layer.jsx"
-
+#include "file.jsx"
+#include "file.jsx"
+#include "doc.jsx"
 
 
 function GetAllTargetPath(type)
@@ -230,7 +232,7 @@ function BuildAllPic (summaryInfo,bShadow)
 
         }
 
-        y = y + childPicHeight + blood_1;
+        y = y + childPicHeight + blood_1*3/4;
 
         for (   var iX = 0; 
                 (iX < lines) && ((iX + iY*lines) < imageNameArray.length); 
@@ -245,16 +247,16 @@ function BuildAllPic (summaryInfo,bShadow)
             templateDoc.artLayers["child_name_" + imageIndex].resize(areaWidthImage/orgWidth*100, areaWidthImage/ orgWidth*100, AnchorPosition.TOPLEFT);
 
             templateDoc.artLayers["child_name_" + imageIndex].translate(  new UnitValue(orgCropX,"px"), 
-                                                                            new UnitValue(orgCropY,'px'));
+                                                                          new UnitValue(orgCropY,'px'));
             SetTextLayerContexts (templateDoc, "child_name_" + imageIndex,imageNameArray[iX + iY * lines].name);
             
             var childNameWidth = GetLayerWidth(templateDoc.artLayers["child_name_" + imageIndex]);
             
-            templateDoc.artLayers["child_name_" + imageIndex].translate(new UnitValue((areaWidthImage - childNameWidth)/2,"px"));
+            templateDoc.artLayers["child_name_" + imageIndex].translate(new UnitValue((areaWidth - childNameWidth)/2,"px"));
             childNameHeight = GetLayerHeight(templateDoc.artLayers["child_name_" + imageIndex]);      
 
         }
-        y = y + childNameHeight + blood_2;
+        y = y + childNameHeight + blood_1;
 
         var layer = templateDoc.artLayers["cut_off"].duplicate();
         layer.name = "cut_off_" + iY;
@@ -273,7 +275,8 @@ function BuildAllPic (summaryInfo,bShadow)
                               new UnitValue(y,"px"),AnchorPosition.TOPCENTER);
 
     var targetFile = new File (summaryInfo.targetPath);
-    templateDoc.saveAs(targetFile, GetJPGParam(), true);         
+    templateDoc.saveAs(targetFile, GetJPGParam(), true);
+    File_SaveMulitSizeAndCut (templateDoc, summaryInfo.targetPath, 500, 600);
     CloseDoc (templateDoc);    
 
     
@@ -543,14 +546,14 @@ function IdentAPicByImageInfo (imageInfo)
                 imageInfo.path,
                 imageInfo.targetPath.desp,
                 imageInfo.name,
-                imageInfo.templatePath.use_for);
+                imageInfo.templatePath.use_for_detail);
 
     IdentAPic ( imageInfo.despTemplatePath_mobile,
                 imageInfo.templatePath.ident,
                 imageInfo.path,
                 imageInfo.targetPath.desp_mobile,
                 imageInfo.name,
-                imageInfo.templatePath.use_for);
+                imageInfo.templatePath.use_for_detail);
 
 }
 
