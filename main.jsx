@@ -89,8 +89,9 @@ function IdentAPic (templatePath,  identPath,  orgPath,  targetPath,  name, use_
                                                 AnchorPosition.TOPLEFT);
         
         duplicateFrom (templateDoc, identPath, OpenDocumentType.JPEG,  "mask");
-        templateDoc.artLayers["mask"].resize (  templateWidth/GetLayerWidth(templateDoc.artLayers["mask"])*100, 
-                                                templateWidth/GetLayerWidth(templateDoc.artLayers["mask"])*100,
+        var maskWidth = GetLayerWidth(templateDoc.artLayers["mask"]);
+        templateDoc.artLayers["mask"].resize (  templateWidth/maskWidth*100, 
+                                                templateWidth/maskWidth*100,
                                                 AnchorPosition.TOPLEFT);
         SetTextLayerContexts (templateDoc, "name", name);
         SetTextLayerContexts (templateDoc, "use_for", use_for);
@@ -191,7 +192,7 @@ function BuildAllPic (summaryInfo,bShadow)
     var canvsWidth = 700;
     var canvsHeight = 3000;
     var areaWidth = canvsWidth/summaryInfo.lines;
-    var areaWidthImage = areaWidth*8/10;
+    var areaWidthImage = areaWidth*19/20;
     var y = 0;
     var childPicHeight = 0;
     var childNameHeight = 0;
@@ -218,7 +219,7 @@ function BuildAllPic (summaryInfo,bShadow)
                                 "child_pic_" + imageIndex);
             else
                 duplicateFrom ( templateDoc,
-                                imageNameArray[iX + iY * lines].targetPath.compentWithShadow,
+                                imageNameArray[iX + iY * lines].targetPath.compent,
                                 OpenDocumentType.PNG, 
                                 "child_pic_" + imageIndex);
             var orgWidth = GetLayerWidth(templateDoc.artLayers["child_pic_" + imageIndex]);            
@@ -257,12 +258,6 @@ function BuildAllPic (summaryInfo,bShadow)
 
         }
         y = y + childNameHeight + blood_1;
-
-        var layer = templateDoc.artLayers["cut_off"].duplicate();
-        layer.name = "cut_off_" + iY;
-        layer.translate (new UnitValue(0, "px"),
-                         new UnitValue(y, "px"));
-        y = y + blood_2;
         
     }
 
@@ -281,6 +276,68 @@ function BuildAllPic (summaryInfo,bShadow)
 
     
 }
+
+
+function BuildAllPic2 (summaryInfo,bShadow)
+{
+    var imageNameArray = summaryInfo.imageInfo;
+    var lines = summaryInfo.lines;
+    var templatePath = summaryInfo.templatePath;
+    var templateFile = new File (templatePath);
+
+    if (imageNameArray.length == 0)return ;
+
+    for (var iY = 0; iY < parseInt((imageNameArray.length - 1)/lines) + 1; iY ++)
+    {
+
+        for (   var iX = 0; 
+                (iX < lines) && ((iX + iY*lines) < imageNameArray.length); 
+                iX ++)
+        {
+            var imageIndex = (iX + iY * lines);
+            var doc = app.open (templateFile);
+
+            if (bShadow == false)
+                duplicateFrom ( doc,
+                                imageNameArray[imageIndex].targetPath.compent,
+                                OpenDocumentType.PNG, 
+                                "child_pic_" + imageIndex);
+            else
+                duplicateFrom ( doc,
+                                imageNameArray[imageIndex].targetPath.compent,
+                                OpenDocumentType.PNG, 
+                                "child_pic_" + imageIndex);
+            
+
+            doc.activeLayer.translate(  new UnitValue(doc.artLayers["pos"].bounds[0].as("px"),"px"), 
+                                        new UnitValue(doc.artLayers["pos"].bounds[1].as("px"),'px'));
+            var targetHeight = GetLayerHeight (doc.artLayers["pos"]);
+            var targetWidth = GetLayerWidth (doc.artLayers["pos"]);
+            var orgHeight = GetLayerHeight (doc.activeLayer);
+            var orgWidth = GetLayerWidth (doc.activeLayer);
+            doc.activeLayer.resize(targetWidth/orgWidth*100, targetWidth/ orgWidth*100, AnchorPosition.TOPLEFT);
+            
+            if (CheckLayerExist (doc, "name"))
+                doc.artLayers["name"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);
+            
+            SetTextLayerContexts (doc, "name", imageNameArray[iX + iY * lines].name);
+   
+            var targetFile = new File (Utils_GetFilePathSlave(summaryInfo.targetPath, imageIndex));
+            doc.saveAs(targetFile, GetJPGParam(), true);
+            CloseDoc (doc);    
+        }
+    }
+
+    
+}
+
+
+
+
+
+
+
+
 
 
 function GetPictrueName ()
@@ -312,6 +369,12 @@ function GetAHeaderInfoX (header)
     return headerInfoArray;
 }
 
+function GetModul ()
+{
+       var modul = header.@modul.toString();
+    
+}
+
 function GetHeaderGroupInfo (index)
 {
     var config = new XML (GetConfigXML());
@@ -323,7 +386,7 @@ function GetHeaderGroupInfo (index)
     var headerInfo = new Object ();
 
     if (0 == modul.length)
-        modul = "common";
+        modul = config.work_status.model.toString();
 
     if (CompareString(header.@attr.toString(),"face2") ||
         CompareString(header.@attr.toString(),"face") )
@@ -472,9 +535,11 @@ function BuildOptionPicture(imageInfo)
     
     SetTextLayerContexts (doc, "name", imageInfo.name);
     SetTextLayerContexts (doc, "desp", "For " + imageInfo.templatePath.use_for);
-    
-    HorzMiddleLayerByLayer (doc, doc.layers["desp_area"], doc.layers["name"]); 
-    HorzMiddleLayerByLayer (doc, doc.layers["desp_area"], doc.layers["desp"]); 
+
+    if (CheckLayerExist (doc, "name"))
+        HorzMiddleLayerByLayer (doc, doc.layers["desp_area"], doc.layers["name"]); 
+    if (CheckLayerExist (doc, "desp"))
+        HorzMiddleLayerByLayer (doc, doc.layers["desp_area"], doc.layers["desp"]); 
 
     if (null != imageInfo.optionBackgroundPath){
         InsertPicFullLayer (doc, imageInfo.optionBackgroundPath,OpenDocumentType.JPEG, "bk_end");
@@ -482,7 +547,12 @@ function BuildOptionPicture(imageInfo)
         doc.artLayers["bk_end"].visible = true;
     }
 
-    doc.layerSets["water"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);
+    if (CheckLayerExist (doc, "water"))
+        doc.layerSets["water"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);
+    if (CheckLayerExist (doc, "name"))
+        doc.artLayers["name"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);
+    if (CheckLayerExist (doc, "desp"))
+        doc.artLayers["desp"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);
     
     var targetFile = new File (imageInfo.targetPath.option_800);
     doc.saveAs(targetFile, GetJPGParam(), true);
@@ -578,7 +648,7 @@ function IdentPicByConfig()
 
 function GetSummaryTargetPath (tag)
 {
-    return GetOutputPathBase() + "./desp/" + "summary" + "_" + tag + ".jpg";
+    return GetOutputPathBase() + "./desp/summary/" + tag + ".jpg";
 }
 
 function GetSummaryInfo ()
@@ -593,7 +663,7 @@ function GetSummaryInfo ()
         info.lines = Number(summarys[i].@lines.toString());
         info.modul = summarys[i].@modul.toString();
         info.imageInfo = GetImageInfoByAttr ("face");
-        info.targetPath =  GetSummaryTargetPath (info.lines);
+        info.targetPath =  GetSummaryTargetPath ("e");
         info.templatePath = templateInfo[info.modul].summary;
         infoArray.push (info);
     }
@@ -610,6 +680,15 @@ function BuildSummary()
 
 }
 
+function BuildSummary2()
+{
+    var infoArray = GetSummaryInfo ();
+    for (var i = 0; i < infoArray.length; i ++ ){
+        BuildAllPic2 (infoArray[i], true);
+    }
+
+}
+
 function work()
 {
     var config = new XML (GetConfigXML());
@@ -619,6 +698,7 @@ function work()
     if (CompareString(w.header.toString(),"1")) BuildMainPicture();
     if (CompareString(w.option.toString(),"1"))BuildAllOptionPicture();
     if (CompareString(w.summary.toString(),"1"))BuildSummary ();
+    //if (CompareString(w.summary.toString(),"1"))BuildSummary2 ();
 }
 
 InitAll ();

@@ -65,6 +65,14 @@ function SetTextLayerContexts (doc, name, contexts)
         doc.artLayers[name].textItem.contents = contexts;   
 }
 
+function GetTextLayerContexts(doc, name)
+{
+    if (CheckLayerExist (doc, name))
+        return  doc.artLayers[name].textItem.contents;
+    else 
+        return null;
+}
+
 
 function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
 {
@@ -75,8 +83,10 @@ function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
         adujstArtLayer.resize(refLayerWidth/adjustLayerWidth*100, refLayerWidth/adjustLayerWidth*100, AnchorPosition.TOPLEFT);
         adjustLayerWidth = refLayerWidth;
     }
-    var x =GetLayerTopLeftX (refArtLayer) + (refLayerWidth - adjustLayerWidth)/2;
-    adujstArtLayer.translate (new UnitValue(x, "px") - new UnitValue (GetLayerTopLeftX (adujstArtLayer),"px"));
+    var refX = GetLayerTopLeftX (refArtLayer);
+    var x = refX + (refLayerWidth - adjustLayerWidth)/2;
+    var orgX = GetLayerTopLeftX (adujstArtLayer);
+    adujstArtLayer.translate (new UnitValue(x, "px") - new UnitValue (orgX,"px"));
 }
 
 
@@ -137,9 +147,13 @@ function GetAComponent (templatePath,  orgPath, targetPath, angle, type, resizeX
     templateDoc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
    
     templateDoc.pathItems["case_path"].makeSelection (0);
+    var angleT = GetTextLayerContexts(templateDoc, "degree")
+    if (angleT != null)
+        angle = parseFloat (angleT);
     templateDoc.selection.rotate (angle);
     templateDoc.selection.copy (false);
     templateDoc.paste (false).name = "end";
+
     
     for ( var i = 0; i < templateDoc.layers.length; i ++)
     {

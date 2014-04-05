@@ -11,7 +11,7 @@ function GetJPGParam()
     jpgParam.embedColorProfile = true;
     jpgParam.format = FormatOptions.OPTIMIZEDBASELINE;
     jpgParam.matte = MatteType.NONE;
-    jpgParam.quality = 6;
+    jpgParam.quality = 5;
     jpgParam.scans = 3;       
     return jpgParam;        
 }
@@ -20,12 +20,13 @@ function GetJPGParam()
 function GetTargetPathInfo (imageInfo)
 {
     var path = new Object ();
-    if (CompareString(imageInfo.attr, "face"))
+    if (CompareString(imageInfo.attr, "face") ||
+        CompareString(imageInfo.attr, "head"))
     {
         path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
         path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        path.compent = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["name"] + "_0.png";
-        path.compentWithShadow = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["name"] + "_1.png";
+        path.compent = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_0.png";
+        path.compentWithShadow = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_1.png";
         path.option_400 = GetOutputPathBase() + "./head/400/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
         path.option_800= GetOutputPathBase() + "./head/800/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
         return path;
@@ -40,7 +41,7 @@ function GetTargetPathInfo (imageInfo)
         CompareString(imageInfo.attr, "show"))
     {
         path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        path.desp_m = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
         return path;
     }
     if (CompareString(imageInfo.attr, "detail"))
@@ -71,15 +72,11 @@ function ParseImageInfo (image)
     if (CompareString(imageInfo.attr,"face") ||
         CompareString(imageInfo.attr,"face2") ||
         CompareString(imageInfo.attr,"side") ||
+        CompareString(imageInfo.attr,"head") ||
+        CompareString(imageInfo.attr,"detail") ||
         CompareString(imageInfo.attr,"show"))
     {
         imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].desp;
-        imageInfo.despTemplatePath_mobile = tempateInfo[imageInfo.modul].desp_mobile;
-    }
-
-    if (CompareString(imageInfo.attr,"detail"))
-    {
-        imageInfo.despTemplatePath = tempateInfo[imageInfo.modul].detail;
         imageInfo.despTemplatePath_mobile = tempateInfo[imageInfo.modul].desp_mobile;
     }
     

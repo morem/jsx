@@ -98,6 +98,18 @@ function GetGlobelModel()
     return config.work_status.model.toString ();
 }
 
+function GetTemplatePathAbsolute (path)
+{
+    if (path.indexOf ("\\") == 0 ||
+        path.indexOf ("/") == 0){
+        return GetWorkPath () + "." + path;
+    }
+    else{
+        return GetTemplateBase() + path;
+    }
+
+}
+
 function GetTemplateInfoX ()
 {
     var modulArray = new Array ();
@@ -108,24 +120,24 @@ function GetTemplateInfoX ()
     {
         var path = new Object();
         if (CompareString(tmplate[i].@model.toString(),"abstract")){
-            path ["config"]     = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "config")
-            path ["abstract"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "abstract")
+            path ["config"]     = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "config"))
+            path ["abstract"]   = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "abstract"))
         }
         
         if (CompareString(tmplate[i].@model.toString(),"detail")){
-            path ["detail_a"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "detail_a")
-            path ["detail_b"]   = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "detail_b")
+            path ["detail_a"]   = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "detail_a"))
+            path ["detail_b"]   =GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "detail_b"))
         }
         
-        path ["mask"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "mask");
-        path ["desp"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "desp");
-        path ["desp_mobile"]= GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "desp_mobile");
-        path ["main"]       = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "main");
-        path ["fmain"]      = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "fmain");
-        path ["option"]     = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "option");
-        path ["ident"]      = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "ident");
-        path ["summary"]    = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "summary");
-        path ["detail"]     = GetTemplateBase() + GetTemplateInfoX_ (tmplate, i , "detail");
+        path ["mask"]       = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "mask"));
+        path ["desp"]       = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "desp"));
+        path ["desp_mobile"]= GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "desp_mobile"));
+        path ["main"]       = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "main"));
+        path ["fmain"]      = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "fmain"));
+        path ["option"]     = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "option"));
+        path ["ident"]      = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "ident"));
+        path ["summary"]    = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "summary"));
+        path ["detail"]     = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "detail"));
         path ["use_for"]    = GetTemplateInfoX_ (tmplate, i , "use_for");
         path ["use_for_detail"] = GetTemplateInfoX_ (tmplate, i , "use_for_detail");
         
@@ -234,6 +246,8 @@ function InitAll()
     var f = new Folder (GetOutputPathBase() + "./head/400");
     f.create();
     var f = new Folder (GetOutputPathBase() + "./head/800");
+    f.create();
+    var f = new Folder (GetOutputPathBase() + "./desp/summary");
     f.create();
 }
 
