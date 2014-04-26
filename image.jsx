@@ -1,4 +1,4 @@
-function GetPNGParam ()
+﻿function GetPNGParam ()
 {
         var t = new PNGSaveOptions();
         t.interlaced = false;
@@ -8,7 +8,7 @@ function GetPNGParam ()
 function GetJPGParam()
 {
     var jpgParam = new JPEGSaveOptions();
-    jpgParam.embedColorProfile = true;
+    jpgParam.embedColorProfile = false;
     jpgParam.format = FormatOptions.OPTIMIZEDBASELINE;
     jpgParam.matte = MatteType.NONE;
     jpgParam.quality = 5;

@@ -180,6 +180,7 @@ function GetAFileContent (path)
     return str; 
 }
 
+
 function GetConfigFileContent ()
 {
     var path = GetWorkPath() + "jsx.xml"
@@ -248,6 +249,8 @@ function InitAll()
     var f = new Folder (GetOutputPathBase() + "./head/800");
     f.create();
     var f = new Folder (GetOutputPathBase() + "./desp/summary");
+    f.create();
+    var f = new Folder (GetOutputPathBase() + "./desp_mobile/summary");
     f.create();
 }
 

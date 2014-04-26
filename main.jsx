@@ -287,9 +287,20 @@ function BuildAllPic2 (summaryInfo,bShadow)
 
     if (imageNameArray.length == 0)return ;
 
+     var doc = app.open (templateFile);
+     var templateWidth = Doc_GetDocWidth(doc);
+     var templateHeight = Doc_GetDocHeight(doc);
+
     for (var iY = 0; iY < parseInt((imageNameArray.length - 1)/lines) + 1; iY ++)
     {
+        var summaryPath_pc = GetSummaryTargetPath ("summary_" + lines + "_" + iY, true);
+        var summaryPath_mb = GetSummaryTargetPath ("summary_" + lines + "_" + iY, false);
+        var summaryDoc = app.documents.add ( 
+                            new UnitValue (templateWidth* lines, "px"),
+                            new UnitValue (templateHeight, "px"),
+                            72,"tmp",NewDocumentMode.RGB);
 
+        
         for (   var iX = 0; 
                 (iX < lines) && ((iX + iY*lines) < imageNameArray.length); 
                 iX ++)
@@ -319,13 +330,30 @@ function BuildAllPic2 (summaryInfo,bShadow)
             
             if (CheckLayerExist (doc, "name"))
                 doc.artLayers["name"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);
+
+            doc.artLayers["pos"].visible = false;
             
             SetTextLayerContexts (doc, "name", imageNameArray[iX + iY * lines].name);
-   
-            var targetFile = new File (Utils_GetFilePathSlave(summaryInfo.targetPath, imageIndex));
+            
+            var targetPath = Utils_GetFilePathSlave(summaryInfo.targetPath, imageIndex);
+            var targetFile = new File (targetPath);
             doc.saveAs(targetFile, GetJPGParam(), true);
-            CloseDoc (doc);    
+            CloseDoc (doc);
+            
+            duplicateFrom ( summaryDoc, targetPath, OpenDocumentType.JPEG, "child_pic_" + imageIndex);
+            summaryDoc.activeLayer.translate(  new UnitValue(iX * templateWidth,"px"), 
+                                                                new UnitValue(0,'px'));
+            
         }
+        var summaryFile_pc = new File (summaryPath_pc);
+        var summaryFile_mb = new File (summaryPath_mb);
+        summaryDoc.resizeImage (new UnitValue(700,"px"));
+        summaryDoc.saveAs (summaryFile_pc, GetJPGParam(), true);
+        
+        summaryDoc.resizeImage (new UnitValue(600,"px"));
+        summaryDoc.saveAs (summaryFile_mb, GetJPGParam(), true);
+        CloseDoc (summaryDoc);
+                
     }
 
     
@@ -646,9 +674,12 @@ function IdentPicByConfig()
    }    
 }
 
-function GetSummaryTargetPath (tag)
+function GetSummaryTargetPath (tag, pc)
 {
-    return GetOutputPathBase() + "./desp/summary/" + tag + ".jpg";
+    if (pc == true)
+        return GetOutputPathBase() + "./desp/summary/" + tag + ".jpg";
+    else
+        return GetOutputPathBase() + "./desp_mobile/summary/" + tag + ".jpg";
 }
 
 function GetSummaryInfo ()
@@ -663,7 +694,7 @@ function GetSummaryInfo ()
         info.lines = Number(summarys[i].@lines.toString());
         info.modul = summarys[i].@modul.toString();
         info.imageInfo = GetImageInfoByAttr ("face");
-        info.targetPath =  GetSummaryTargetPath ("e");
+        info.targetPath =  GetSummaryTargetPath ("e", true);
         info.templatePath = templateInfo[info.modul].summary;
         infoArray.push (info);
     }
@@ -684,7 +715,7 @@ function BuildSummary2()
 {
     var infoArray = GetSummaryInfo ();
     for (var i = 0; i < infoArray.length; i ++ ){
-        BuildAllPic2 (infoArray[i], true);
+        BuildAllPic2 (infoArray[i], false);
     }
 
 }
@@ -697,8 +728,8 @@ function work()
     if (CompareString(w.component.toString(),"1"))GetComponentByConfig ();
     if (CompareString(w.header.toString(),"1")) BuildMainPicture();
     if (CompareString(w.option.toString(),"1"))BuildAllOptionPicture();
-    if (CompareString(w.summary.toString(),"1"))BuildSummary ();
-    //if (CompareString(w.summary.toString(),"1"))BuildSummary2 ();
+    //if (CompareString(w.summary.toString(),"1"))BuildSummary ();
+    if (CompareString(w.summary.toString(),"1"))BuildSummary2 ();
 }
 
 InitAll ();
