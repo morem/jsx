@@ -315,7 +315,7 @@ function BuildAllPic2 (summaryInfo,bShadow)
                                 "child_pic_" + imageIndex);
             else
                 duplicateFrom ( doc,
-                                imageNameArray[imageIndex].targetPath.compent,
+                                imageNameArray[imageIndex].targetPath.compentWithShadow,
                                 OpenDocumentType.PNG, 
                                 "child_pic_" + imageIndex);
             

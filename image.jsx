@@ -23,25 +23,25 @@ function GetTargetPathInfo (imageInfo)
     if (CompareString(imageInfo.attr, "face") ||
         CompareString(imageInfo.attr, "head"))
     {
-        path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp = GetOutputPathBase() + "./desp/" + imageInfo["id"] + ".png";
+        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["id"] + ".png";
         path.compent = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_0.png";
         path.compentWithShadow = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_1.png";
-        path.option_400 = GetOutputPathBase() + "./head/400/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
-        path.option_800= GetOutputPathBase() + "./head/800/" + imageInfo["modul"] + "_" + imageInfo["name"] + ".jpg";
+        path.option_400 = GetOutputPathBase() + "./head/400/" + imageInfo["name"] + ".jpg";
+        path.option_800= GetOutputPathBase() + "./head/800/" + imageInfo["name"] + ".jpg";
         return path;
     }
     if (CompareString(imageInfo.attr, "face2"))
     {
-        path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp = GetOutputPathBase() + "./desp/" +imageInfo["id"] + ".png";
+        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["id"] + ".png";
         return path;
     }
     if (CompareString(imageInfo.attr, "side") ||
         CompareString(imageInfo.attr, "show"))
     {
-        path.desp = GetOutputPathBase() + "./desp/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
-        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["modul"] + "_" + imageInfo["id"] + ".png";
+        path.desp = GetOutputPathBase() + "./desp/" + imageInfo["id"] + ".png";
+        path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["id"] + ".png";
         return path;
     }
     if (CompareString(imageInfo.attr, "detail"))
@@ -119,7 +119,6 @@ function GetImageInfoByID(id)
     }
     return null;    
 }
-
 
 function GetUseForByImageInfo (imageInfo)
 {

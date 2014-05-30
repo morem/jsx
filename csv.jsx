@@ -12,7 +12,7 @@ function CSV_Load (path)
     {
         str = file.readln(); 
         //output (str);
-        var data = CSV_Parse (str);
+        var data = CSV_ParseLine (str);
         dataArray.push (data);
     }
     file.close ();
@@ -20,7 +20,7 @@ function CSV_Load (path)
     return dataArray;    
 }
 
-function CSV_Parse (str)
+function CSV_ParseLine (str)
 {
     var data = str.split (",",200);
     for (i =0 ; i < data.length ; i ++)
@@ -67,10 +67,10 @@ function CSV_CompareString (str1, str2)
 }
 
 
-function CSV_GetIndex (data, key)
+function CSV_GetIndex (data, key, line)
 {
-    var data0 = data[0];
-    for (var i = 0; i < data0.length; i ++)
+    var data0 = data[line];
+    for (var i = 0; i < data.length; i ++)
     {
         if ( CSV_CompareString(data0[i],key) == true)return i;
     }
@@ -79,43 +79,157 @@ function CSV_GetIndex (data, key)
 
 function CSV_GetIndex_OrderIndex(data)
 {
-    return CSV_GetIndex (data, "订单编号");
+    return CSV_GetIndex (data, "订单编号", 0);
 }
 
 function CSV_GetIndex_LogisticsIndex(data)
 {
-    return CSV_GetIndex (data, "物流单号");
+    return CSV_GetIndex (data, "物流单号", 0);
 }
 
 function CSV_GetIndex_LogisticsCompany (data)
 {
-        return CSV_GetIndex (data, "物流公司");
+        return CSV_GetIndex (data, "物流公司", 0);
  }
 
 function CSV_GetIndex_OrderStatus (data)
 {
-        return CSV_GetIndex (data, "订单状态");
+        return CSV_GetIndex (data, "订单状态", 0);
  }
 
 function CSV_GetIndex_PayFact(data)
 {
-        return CSV_GetIndex (data, "买家实际支付金额");
+        return CSV_GetIndex (data, "买家实际支付金额", 0);
  }
 function CSV_GetIndex_PayTime(data)
 {
-        return CSV_GetIndex (data, "订单付款时间");
+        return CSV_GetIndex (data, "订单付款时间", 0);
  }
 
 function CSV_GetIndex_OrderCreateTime(data)
 {
-        return CSV_GetIndex (data, "订单创建时间");
+        return CSV_GetIndex (data, "订单创建时间", 0);
+}
+
+function OrderList_DataBuild (dataCSV)
+{
+    var orderList  = new Array ();
+    var orderIndex      = CSV_GetIndex_OrderIndex (dataCSV);
+    var logisticsIndex  = CSV_GetIndex_LogisticsIndex (dataCSV);
+    var logisticsCompany = CSV_GetIndex_LogisticsCompany (dataCSV);
+    var orderStatus     = CSV_GetIndex_OrderStatus (dataCSV);
+    var payFact         = CSV_GetIndex_PayFact (dataCSV);   
+    for (var i = 1; i < 100; i ++)
+    {
+        orderNum    = dataCSV[i][orderIndex];
+        logistNum   = dataCSV[i][logisticsIndex];
+        logistCom   = dataCSV[i][logisticsCompany];
+        if (orderList[logistNum] == null){
+            orderList[logistNum] = new Array ();
+        }
+        
+        var data = new Object ();
+        data.orderNum = orderNum;
+        data.logistNum = logistNum;
+        data.logistCom = logistCom;        
+        orderList [logistNum].push (data);
+       
+
+    }
+    return orderList;
+}
+
+function CSV_GetHeaderInfo (s_init, csv_data)
+{
+    for (var i = 0; i < s_init.data_header.length; i ++)
+    {
+       s_init.data_header[i].index = CSV_GetIndex (csv_data,
+                                                   s_init.data_header[i].text,
+                                                   s_init.data_header_index);
+       if (CompareString (s_init.key, s_init.data_header[i].text))
+            s_init.keyIndex = s_init.data_header[i].index;
+    }
 }
 
 
-var data = CSV_Load ("E:\\rambo\\jsx\\test_file\\ExportOrderList201404270028.csv");
-var index = CSV_GetIndex_OrderIndex (data);
-var index = CSV_GetIndex_LogisticsIndex (data);
-var index = CSV_GetIndex_LogisticsCompany (data);
-var index = CSV_GetIndex_OrderStatus (data);
-var index = CSV_GetIndex_PayFact (data);
+function CSV_Parse(s_init)
+{
+    //s_init.data_start = 1,2,3     真正的数据起始位
+    //s_init.data_header_index = 0          表格头所在行
+    //s_init.data_header[0..900].text = "展现量"
+    //s_init.data_header[0..900].format = 'n' 'p' 's' 't'
+    //n 数字小数
+    var dataStruct = new Array ();
+    var csv_data = CSV_Load (s_init.path);
+    CSV_GetHeaderInfo (s_init, csv_data);
+
+    for (var i = s_init.data_start ; i < csv_data.length ; i ++)
+    {
+        var data = new Object();
+        var key = new Object ();
+        
+        data = csv_data[i];
+        key = data[s_init.keyIndex];
+        if (key == null) continue;
+        if (key.length == 0)continue;
+        
+        if (dataStruct[key] == null){
+            dataStruct[key] = new Array ();
+        }
+        
+        var contents = new Object ();
+        for (var j= 0; j < s_init.data_header.length; j ++)
+        {
+            var t = new Object();
+            t = s_init.data_header[j];
+            contents[t.text] = data[t.index];
+        }
+        dataStruct [key].push (contents);
+    }
+
+    return dataStruct; 
+    
+}
+
+
+function CSV_Parse_Direct(s_init)
+{
+    //s_init.data_start = 1,2,3     真正的数据起始位
+    //s_init.data_header_index = 0          表格头所在行
+    //s_init.data_header[0..900].text = "展现量"
+    //s_init.data_header[0..900].format = 'n' 'p' 's' 't'
+    //n 数字小数
+    var dataStruct = new Array ();
+    var csv_data = CSV_Load (s_init.path);
+    CSV_GetHeaderInfo (s_init, csv_data);
+
+    for (var i = s_init.data_start ; i < csv_data.length ; i ++)
+    {
+        var data = new Object();
+        var key = new Object ();
+        
+        data = csv_data[i];
+        key = data[s_init.keyIndex];
+        if (key == null) continue;
+        if (key.length == 0)continue;
+        
+        var contents = new Object ();
+        for (var j= 0; j < s_init.data_header.length; j ++)
+        {
+            var t = new Object();
+            t = s_init.data_header[j];
+            contents[t.text] = data[t.index];
+        }
+        dataStruct [key] = contents;
+    }
+
+    return dataStruct; 
+    
+}
+
+
+/*
+var dataA = CSV_Load ("E:\\rambo\\jsx\\test_file\\ExportOrderList201404270028.csv");
+var orderList = OrderList_DataBuild (dataA);
 var ff= 0;
+*/
