@@ -53,12 +53,21 @@ function ACC_OrderList_Init (path)
     e.format = 's';
     s_init.data_header.push (e);
 
-    /*    
     var e  = new Object();
-    e.text = "买家实际支付金额";
-    e.format = 'n';
+    e.text = "买家会员名";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "订单关闭原因";
+    e.format = 's';
     s_init.data_header.push (e);
     
+    var e  = new Object();
+    e.text = "买家实际支付金额";
+    e.format = 's';
+    s_init.data_header.push (e);
+   
     var e  = new Object();
     e.text = "订单付款时间";
     e.format = 't';
@@ -68,10 +77,9 @@ function ACC_OrderList_Init (path)
     e.text = "订单创建时间";
     e.format = 't'
     s_init.data_header.push (e);
-    */
-
     
     g_OrderList = CSV_Parse (s_init);
+    var dd = g_OrderList;
 
 }
 
@@ -109,7 +117,13 @@ function ACC_OrderDetailList_Init (path)
     e.format = 's';
     s_init.data_header.push (e);
 
+    var e  = new Object();
+    e.text = "定单状态";
+    e.format = 's';
+    s_init.data_header.push (e);
+
     g_OrderDetailList = CSV_Parse (s_init);
+    var dd = g_OrderDetailList;
 }
 
 function ACC_GetOrderInfo (data)
@@ -119,15 +133,25 @@ function ACC_GetOrderInfo (data)
         data.detail = g_OrderDetailList[orderNum];
 }
 
+
+
+
+/*
+1. 已获得所有的发货定单
+2. 挑出已关闭的定单编号
+
+*/
 function ACC_GetPacketList ()
 {
     var x = new Object ();
     for ( x  in g_OrderList )
     {
         for (var i = 0; i <g_OrderList[x].length; i ++  )
-        {
+        {/*一个用户多个定单
+                需要挑出已退款的订单*/
             var data = new Object();
             data =g_OrderList[x][i];
+            //data.vaild = ACC_CheckOrderVaild (g_OrderList[x][i]["订单状态"]);
             ACC_GetOrderInfo (data);
         }
     }
@@ -205,43 +229,139 @@ function ACC_GetDevePrice (company ,area)
 
 }
 
-function ACC_GetPacketDevePrice (packet)
+function ACC_CaulPacketCost (p)
 {
-    packet[area] = ACC_GetArea (packet[0] ["收货地址"]);
+        var s = 0;
+        for (i in p.goods)
+        {
+                var o;
+                o = p.goods[i];
+                if (o.price*1.0 > 3)
+                    s = s*1.0 + (o.price*1.0 + 0.7)*o.num;   
+                else 
+                    s = s*1.0 + (o.price*1.0)*o.num;   
+        }
+    
+        s = s*1.0 + p.price*1.0;
+        return s;
+}
 
+function ACC_OutputInvaildInfo (id)
+{
+    output (id);
 }
 
 function ACC_GetPacketGoodsStruct (packet)
 {
     var goods = new Array ();
 
-    //for
+
+    for (i in packet)
     {
-        e = new Object ();
-        e.priec = ACC_GetGoodsPrice ("4sdfsf");
-        e.num = 2;
-        goods.push (e);
+        var o ;
+        o = packet[i];
+        for (j in o.detail)
+        {
+            var w ;
+            var e;
+            var code ;
+            
+            w = o.detail[j];
+            e = new Object ();
+            
+            code = w["外部系统编号"];
+            if (code == null){
+                  //  continue;
+                    return false;
+            }
+            if (code.length == 0){
+                    return false;
+            }
+            if (CompareString(code,"tswz"))
+            {
+                    return false;
+            }
+            e.price = g_GoodPrice[code]["价格"]
+            e.num = w["购买数量"];
+            goods.push (e);            
+        }
     }
     
     return goods;
 }
 
-function ACC_CaulCost (packet)
+
+
+function ACC_CheckOrderVaild (status)
+{
+    if (CSV_CompareString(status, "交易关闭"))return false;
+    if (CSV_CompareString(status, "等待买家付款"))return false;
+    if (CSV_CompareString(status, "买家已付款，等待卖家发货"))return false;
+    if (CSV_CompareString(status, "未创建支付宝交易"))return false;
+    return true;
+}
+
+function ACC_StatAllInfo ()
 {
 
-    return ;
+
 }
 
 function ACC_Stat ()
 {
-    var packet = new Object ();
-    var goodStruct = new Object ();
+    var packet;
+    var goodStruct = new Array ();
+    var time = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+    var info = new Array ();
+    var sum = 0;
     for (packet in g_OrderList)
     {
-        packet[price] = ACC_GetPacketDevePrice (packet);
-        packet[goods] = ACC_GetPacketGoodsStruct (packet);
+        var p;
+        var e;
+        e = new Object ();
+        p = g_OrderList[packet];
         
+        e.company = p[0]["物流公司"];
+        e.area = ACC_GetArea (p[0] ["收货地址"]);
+        e.price = ACC_GetDevePrice (e.company , e.area);
+        e.time = p[0]["订单创建时间"] .split ("-")[2].split(" ")[0]*1;
+      //  e.time = 1;
+        time[e.time]  = time[e.time] +1;
+       
+        var manul = false;
+        
+        for (var i = 0; i < p.length ; i ++)
+        {
+            if (false == ACC_CheckOrderVaild (p[i]["订单状态"]))
+                manul = true;
+        }
+
+        if (manul == true)
+        {
+            ACC_OutputInvaildInfo (p[0]["买家会员名"]);
+            continue;
+        }
+
+        
+        e.goods = ACC_GetPacketGoodsStruct (p);
+
+        if (e.goods == false)
+        {
+            ACC_OutputInvaildInfo (p[0]["买家会员名"]);
+            continue;
+        }
+
+
+        goodStruct.push (e);
+        sum = sum*1.0 + ACC_CaulPacketCost (e)*1.0 + 0.7;
+
+  
     }
+    for (var i = 1; i <=32 ; i ++)
+    {
+        $.writeln(i + "--" + time[i]);
+     }
+    return goodStruct;
 }
 
 
@@ -258,13 +378,20 @@ function ACC_GetAllPrice()
 function ACC_Init ()
 {
     ACC_GetAllPrice ();
-    var path = "E:\\rambo\\jsx\\test_file\\am_o.csv";
+
+    
+    var path = "E:\\rambo\\order\\am_d_6.csv";
     ACC_OrderList_Init (path);
-    var path = "E:\\rambo\\jsx\\test_file\\am_g.csv"
+    
+    var path = "E:\\rambo\\order\\am_o_6.csv"
     ACC_OrderDetailList_Init (path)
+
+    
     ACC_GetPacketList ();
     var dd = g_OrderList;
-    ACC_Stat ();
+    var goodStruct = ACC_Stat ();
+
+    
 }
 
 ACC_Init ();

@@ -130,6 +130,7 @@ function GetTemplateInfoX ()
         }
         
         path ["mask"]       = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "mask"));
+        path ["fmask"]      = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "fmask"));
         path ["desp"]       = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "desp"));
         path ["desp_mobile"]= GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "desp_mobile"));
         path ["main"]       = GetTemplatePathAbsolute(GetTemplateInfoX_ (tmplate, i , "main"));
@@ -223,6 +224,12 @@ function GetDetailConfigXML ()
 function GetTemplateConfig ()
 {
     var path = GetTemplateBase() + "path.xml"
+    var content = GetAFileContent (path);
+    return content;
+}
+
+function GetConfigXMLByPath (path)
+{
     var content = GetAFileContent (path);
     return content;
 }

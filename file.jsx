@@ -58,4 +58,8 @@ function File_SaveMulitSizeAndCut (doc, targetPath, verLen, varMax)
     }
 }
 
-
+function File_CheckFileExist (path)
+{
+    var file = new File (path);
+    return file.exists;
+}

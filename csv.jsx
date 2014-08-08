@@ -146,8 +146,14 @@ function CSV_GetHeaderInfo (s_init, csv_data)
        s_init.data_header[i].index = CSV_GetIndex (csv_data,
                                                    s_init.data_header[i].text,
                                                    s_init.data_header_index);
-       if (CompareString (s_init.key, s_init.data_header[i].text))
-            s_init.keyIndex = s_init.data_header[i].index;
+       if (s_init.key != null)
+       {
+            if (CompareString (s_init.key, s_init.data_header[i].text))
+                s_init.keyIndex = s_init.data_header[i].index;
+        }
+       else{
+            s_init.keyIndex = -1;
+       }
     }
 }
 
@@ -162,29 +168,55 @@ function CSV_Parse(s_init)
     var dataStruct = new Array ();
     var csv_data = CSV_Load (s_init.path);
     CSV_GetHeaderInfo (s_init, csv_data);
-
+    var num = 0;
+    var index = 0;
     for (var i = s_init.data_start ; i < csv_data.length ; i ++)
     {
         var data = new Object();
         var key = new Object ();
         
         data = csv_data[i];
-        key = data[s_init.keyIndex];
-        if (key == null) continue;
-        if (key.length == 0)continue;
-        
-        if (dataStruct[key] == null){
-            dataStruct[key] = new Array ();
-        }
-        
-        var contents = new Object ();
-        for (var j= 0; j < s_init.data_header.length; j ++)
+        if (s_init.keyIndex != -1)
         {
-            var t = new Object();
-            t = s_init.data_header[j];
-            contents[t.text] = data[t.index];
+            key = data[s_init.keyIndex];
+            
+            if (key == null) continue;
+            if (key.length == 0)continue;
+            
+            if (dataStruct[key] == null){
+                dataStruct[key] = new Array ();
+                num ++;
+            }
+            else
+            {
+                //ErrorOut ("xxx");
+            }
+            
+            var contents = new Object ();
+            for (var j= 0; j < s_init.data_header.length; j ++)
+            {
+                var t = new Object();
+                t = s_init.data_header[j];
+                contents[t.text] = data[t.index];
+            }
+            dataStruct [key].push (contents);
         }
-        dataStruct [key].push (contents);
+        else
+        {
+            key = index.toString();
+
+            var contents = new Object ();
+            for (var j= 0; j < s_init.data_header.length; j ++)
+            {
+                var t = new Object();
+                t = s_init.data_header[j];
+                contents[t.text] = data[t.index];
+            }   
+            dataStruct [key] = contents;
+        }
+        
+        index ++;
+        
     }
 
     return dataStruct; 

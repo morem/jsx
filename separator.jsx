@@ -8,7 +8,7 @@
 #include "doc.jsx"
 
 
-function Sp_Build (templatePath,  text)
+function Tm_Build (templatePath,  text)
 {
         var templateFile = new File (templatePath);
         var templateDoc = app.open (templateFile);
@@ -22,14 +22,14 @@ function Sp_Build (templatePath,  text)
 }
 
 var tPath = GetBasePath () + "sp.psd";
-Sp_Build (tPath, "简要介绍");
-Sp_Build (tPath, "单款展示");
-Sp_Build (tPath, "物流简介");
-Sp_Build (tPath, "售后提示");
-Sp_Build (tPath, "购物提示");
-Sp_Build (tPath, "包装展示");
-Sp_Build (tPath, "细节展示");
-Sp_Build (tPath, "图案精选");
-Sp_Build (tPath, "品牌介绍");
+Tm_Build (tPath, "简要介绍");
+Tm_Build (tPath, "单款展示");
+Tm_Build (tPath, "物流简介");
+Tm_Build (tPath, "售后提示");
+Tm_Build (tPath, "购物提示");
+Tm_Build (tPath, "包装展示");
+Tm_Build (tPath, "细节展示");
+Tm_Build (tPath, "图案精选");
+Tm_Build (tPath, "品牌介绍");
 
 

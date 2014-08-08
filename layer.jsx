@@ -1,12 +1,12 @@
 ﻿
 function GetBoundsWidth (bounds)
 {
-    return bounds[2].as("px") - bounds[0].as("px");
+    return bounds[2].as("px") - bounds[0].as("px")+1;
 }
 
 function GetBoundsHeight (bounds)
 {
-    return bounds[3].as("px") - bounds[1].as("px");
+    return bounds[3].as("px") - bounds[1].as("px")+1;
 }
 
 
@@ -166,7 +166,7 @@ function GetAComponent (templatePath,  orgPath, targetPath, angle, type, resizeX
     if (resizeX == null)    
         templateDoc.resizeImage (new UnitValue(50, "%"),new UnitValue(50, "%"),72);
     else
-        templateDoc.resizeImage (resizeX,resizeY,72);
+        templateDoc.resizeImage (new UnitValue(resizeX, "pt"),new UnitValue(resizeY, "pt"),72);
     
     var targetFile = new File (targetPath);
 

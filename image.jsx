@@ -27,8 +27,11 @@ function GetTargetPathInfo (imageInfo)
         path.desp_mobile = GetOutputPathBase() + "./desp_mobile/" + imageInfo["id"] + ".png";
         path.compent = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_0.png";
         path.compentWithShadow = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_1.png";
-        path.option_400 = GetOutputPathBase() + "./head/400/" + imageInfo["name"] + ".jpg";
-        path.option_800= GetOutputPathBase() + "./head/800/" + imageInfo["name"] + ".jpg";
+
+        path.compent_f = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_2.png";
+        path.compentWithShadow_f = GetOutputPathBase() + "./component/" + imageInfo["modul"] + "_" + imageInfo["id"] + "_3.png";
+        path.option_400 = GetOutputPathBase() + "./head/400/"+ imageInfo["id"] + imageInfo["name"]+ "_" +  imageInfo["modul"] + ".jpg";
+        path.option_800= GetOutputPathBase() + "./head/800/" + imageInfo["id"] + imageInfo["name"] + "_" +  imageInfo["modul"] + ".jpg";
         return path;
     }
     if (CompareString(imageInfo.attr, "face2"))
