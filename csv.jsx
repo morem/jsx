@@ -70,7 +70,7 @@ function CSV_CompareString (str1, str2)
 function CSV_GetIndex (data, key, line)
 {
     var data0 = data[line];
-    for (var i = 0; i < data.length; i ++)
+    for (var i = 0; i < data0.length; i ++)
     {
         if ( CSV_CompareString(data0[i],key) == true)return i;
     }

@@ -318,12 +318,12 @@ function BuildAllPic2 (summaryInfo,bShadow)
 
             if (bShadow == false)
                 duplicateFrom ( doc,
-                                imageNameArray[imageIndex].targetPath.compent,
+                                imageNameArray[imageIndex].targetPath.compent_f,
                                 OpenDocumentType.PNG, 
                                 "child_pic_" + imageIndex);
             else
                 duplicateFrom ( doc,
-                                imageNameArray[imageIndex].targetPath.compentWithShadow,
+                                imageNameArray[imageIndex].targetPath.compentWithShadow_f,
                                 OpenDocumentType.PNG, 
                                 "child_pic_" + imageIndex);
             

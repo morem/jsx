@@ -80,3 +80,17 @@ function Utils_GetFilePathSlave (path, index)
             Utils_GetFileExtFromPath (path);
 }
 
+function Utils_GetFileTypeByPath (path)
+{
+    var ext = Utils_GetFileExtFromPath (path);
+    if (CompareString(ext,"tiff"))return OpenDocumentType.TIFF;
+    if (CompareString(ext,"jpg"))return OpenDocumentType.JPEG;
+    if (CompareString(ext,"jpeg"))return OpenDocumentType.JPEG;
+    if (CompareString(ext,"bmp"))return OpenDocumentType.BMP;
+    if (CompareString(ext,"png"))return OpenDocumentType.PNG;
+    
+
+
+
+}
+

@@ -1,12 +1,12 @@
 ﻿
 function GetBoundsWidth (bounds)
 {
-    return bounds[2].as("px") - bounds[0].as("px")+1;
+    return bounds[2].as("px") - bounds[0].as("px");
 }
 
 function GetBoundsHeight (bounds)
 {
-    return bounds[3].as("px") - bounds[1].as("px")+1;
+    return bounds[3].as("px") - bounds[1].as("px");
 }
 
 
@@ -130,6 +130,25 @@ function duplicateFrom (selfDoc, srcPath,srcType, layerName)
         return false;        
     }
 }
+
+function duplicateFromNew (selfDoc, srcPath, layerName)
+{
+    try{
+        var srcType = Utils_GetFileTypeByPath (srcPath);
+        var srcFile = new File (srcPath);
+        var srcDoc = app.open (srcFile, srcType, true);  
+        srcDoc.activeLayer.duplicate(selfDoc, ElementPlacement.PLACEATBEGINNING);
+        CloseDoc (srcDoc)
+        selfDoc.activeLayer.name = layerName;
+        return true;
+    }catch (err)
+    {
+        ErrorOut("Error Code" + err +"\n" +
+               "srcPath:" + srcPath + "\n");
+        return false;        
+    }
+}
+
 
 function GetAComponent (templatePath,  orgPath, targetPath, angle, type, resizeX, resizeY)
 {

@@ -60,6 +60,12 @@ function GetWorkPath ()
     return File.decode(GetParams("WORK_DIRECTORY","C:/photoshop.cfg")+ "/");
 }
 
+function GetParam(name)
+{
+    return File.decode(GetParams(name,"C:/photoshop.cfg"));
+}
+
+
 function GetBasePath()
 {
     return  GetWorkPath();

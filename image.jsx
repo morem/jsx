@@ -16,6 +16,16 @@ function GetJPGParam()
     return jpgParam;        
 }
 
+function GetTIFFParam()
+{
+    var param = new TiffSaveOptions();
+    param.alphaChannels = true;
+    param.annotations = true;
+    param.embedColorProfile = true;
+    param.imageCompression = TIFFEncoding.TIFFLZW;
+    param.spotColors = true;
+    return param;        
+}
 
 function GetTargetPathInfo (imageInfo)
 {
