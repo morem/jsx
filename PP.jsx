@@ -198,7 +198,7 @@ function PP_PageBuild (caseInfo, cInfo)
 	CloseDoc (doc);
 }
 
-function PP_Work(type)
+function PP_Work2(type)
 {
     var info = PP_GetCaseInfo ();
 	PP_ProCaseInfo (info);
@@ -220,7 +220,7 @@ function PP_Work()
             if (ret == false)return false;
         }
     }
-	PP_Work ("picture");
+	PP_Work2 ("picture");
 }
 
 
