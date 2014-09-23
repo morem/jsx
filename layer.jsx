@@ -73,6 +73,29 @@ function GetTextLayerContexts(doc, name)
         return null;
 }
 
+function SetDocLayerVaild (doc, arrayName)
+{   
+    var i = 0;
+
+	if (doc.artLayers.length == 1)return ;
+	
+    for (var j = 0; j < doc.artLayers.length; j ++)
+            doc.artLayers[j].visible = false;
+    for (x in arrayName)
+    {
+        if (CheckLayerExist (doc, arrayName[x]))
+        {
+            i ++;
+            doc.artLayers [arrayName[x]].visible = true;
+        }
+    }
+
+    if (i == 0)
+        for (x in doc.artLayers)
+            doc.artLayers[x].visible = true;
+
+}
+
 
 function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
 {
@@ -148,6 +171,15 @@ function duplicateFromNew (selfDoc, srcPath, layerName)
         return false;        
     }
 }
+
+function duplicateLayerFrom (targetDoc, targetLayerName, srcDoc, srcLayerName)
+{
+    srcDoc.artLayers[srcLayerName].duplicate(targetDoc, ElementPlacement.PLACEATBEGINNING);
+    targetDoc.activeLayer.name = targetLayerName;
+    return true;
+    
+}
+
 
 
 function GetAComponent (templatePath,  orgPath, targetPath, angle, type, resizeX, resizeY)

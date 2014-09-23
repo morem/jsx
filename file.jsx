@@ -63,3 +63,8 @@ function File_CheckFileExist (path)
     var file = new File (path);
     return file.exists;
 }
+
+function File_SkanGetDir (path)
+{
+
+}

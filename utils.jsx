@@ -88,9 +88,14 @@ function Utils_GetFileTypeByPath (path)
     if (CompareString(ext,"jpeg"))return OpenDocumentType.JPEG;
     if (CompareString(ext,"bmp"))return OpenDocumentType.BMP;
     if (CompareString(ext,"png"))return OpenDocumentType.PNG;
-    
+}
 
+var g_Index = 0;
 
+function Utils_GetTempNum ()
+{
+    return g_Index ++;
 
 }
+
 

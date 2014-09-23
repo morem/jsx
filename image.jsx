@@ -138,3 +138,19 @@ function GetUseForByImageInfo (imageInfo)
     return imageInfo["template"]["use_for"];
 }
 
+
+
+function GetImageWidthAddHeightAsPx (path)
+{
+    var array = new Array;
+    var file = new File (path);
+    var doc = app.open (file);
+    array[0] =  doc.width.as("px");
+    array[1] = doc.height.as("px");
+    return array;
+}
+
+
+
+
+

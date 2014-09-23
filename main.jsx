@@ -318,12 +318,12 @@ function BuildAllPic2 (summaryInfo,bShadow)
 
             if (bShadow == false)
                 duplicateFrom ( doc,
-                                imageNameArray[imageIndex].targetPath.compent_f,
+                                imageNameArray[imageIndex].targetPath.compent,
                                 OpenDocumentType.PNG, 
                                 "child_pic_" + imageIndex);
             else
                 duplicateFrom ( doc,
-                                imageNameArray[imageIndex].targetPath.compentWithShadow_f,
+                                imageNameArray[imageIndex].targetPath.compentWithShadow,
                                 OpenDocumentType.PNG, 
                                 "child_pic_" + imageIndex);
             
@@ -540,13 +540,15 @@ function BuildMainPicture ()
     {
         var headInfo = GetHeaderGroupInfo (i);
         if (CompareString(headInfo.attr,"face2") ||
-            CompareString(headInfo.attr,"face"))
+            CompareString(headInfo.attr,"face")){
+            if (! File_CheckFileExist (headInfo.image.path))continue;
+
             GetAComponent (headInfo.templatePath,
                             headInfo.image.path,
                             headInfo.targetPath,
                             0,
                             "JPEG",
-                            new UnitValue(800, "px"),new UnitValue(800, "px"));
+                            new UnitValue(800, "px"),new UnitValue(800, "px"));}
         else
             BuildMainPictureByInfo (headInfo);
     }
@@ -564,20 +566,25 @@ function BuildOptionPicture(imageInfo)
 {
     if (!CheckImageInfoAttr(imageInfo, "face"))return false;
 
+    if (! File_CheckFileExist (imageInfo.targetPath.compent))
+	{
+		return true;
+    }
+
     var file = new File (imageInfo.templatePath.option);
     var doc = app.open (file);
 
     if (GetLayerHeight (doc.artLayers["pic_0"])/GetLayerWidth(doc.artLayers["pic_0"]) > 1.3 )
     {
         duplicateFrom (doc, 
-                   imageInfo.targetPath.compentWithShadow_f,
+                   imageInfo.targetPath.compent_f,
                    OpenDocumentType.PNG, 
                    "option");
     }
     else
     {
         duplicateFrom (doc, 
-                   imageInfo.targetPath.compentWithShadow,
+                   imageInfo.targetPath.compent,
                    OpenDocumentType.PNG, 
                    "option");
     }
@@ -653,6 +660,7 @@ function BuildAllOptionPicture()
 function GetAComponentByImageInfo (imageInfo)
 {
     if (!CheckImageInfoAttr(imageInfo, "face"))return false;
+    if (! File_CheckFileExist (imageInfo.path))return true;
     GetAComponent (imageInfo.templatePath.mask, 
                    imageInfo.path,
                    imageInfo.targetPath.compent, 0);
@@ -703,7 +711,7 @@ function GetComponentByConfig()
     for (var i=0; i < imageInfo.length; i ++ )
     {
         GetAComponentByImageInfo (imageInfo[i]);
-        GetAComponentWithShadowByImageInfo (imageInfo[i]);
+        //GetAComponentWithShadowByImageInfo (imageInfo[i]);
    }    
 }
 
@@ -758,7 +766,7 @@ function BuildSummary2()
 {
     var infoArray = GetSummaryInfo ();
     for (var i = 0; i < infoArray.length; i ++ ){
-        BuildAllPic2 (infoArray[i], true);
+        BuildAllPic2 (infoArray[i], false);
     }
 
 }
