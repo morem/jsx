@@ -97,8 +97,13 @@ function ParseImageInfo (image)
 }
 
 
+var g_imageArray = null;
+
 function GetImageInfo ()
 {
+	if (g_imageArray != null)
+		return g_imageArray;
+	
     var config = new XML (GetConfigXML());
     var images = config.pictures.image;
     var n = images.length() ;
@@ -108,7 +113,8 @@ function GetImageInfo ()
         var imageInfo = ParseImageInfo(images[i]);
         imageArray.push (imageInfo);
     }    
-    return imageArray;
+	g_imageArray = imageArray;
+    return g_imageArray;
 }
 
 

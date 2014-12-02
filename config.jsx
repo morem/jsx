@@ -42,16 +42,28 @@ function GetUserName()
 
 }
 
+function GetCfgBasePath ()
+{
+    //var a =  File.decode(GetParams("CFG_BASE_PATH","C:/photoshop.cfg"));
+	//if (a == null)
+	//{
+		a = $.getenv("CFG_BASE_PATH");
+		return a;		
+	//}
+	//return a;
+}
+
+
 function GetTemplatePath ()
 {
-    var a =  $.getenv("CFG_BASE_PATH");
+    var a =  GetCfgBasePath ();
     var b = GetUserName();
     return a + "/" + b + "/";
 }
 
 function GetModelPath ()
 {
-    var a =  $.getenv("CFG_BASE_PATH");
+    var a =  GetCfgBasePath ();
     return a + "/model/";
 }
 
@@ -116,8 +128,10 @@ function GetTemplatePathAbsolute (path)
 
 }
 
+var g_modulArray = null;
 function GetTemplateInfoX ()
 {
+	if (g_modulArray != null) return g_modulArray;
     var modulArray = new Array ();
     var config = new XML (GetTemplateConfig ());
     var tmplate = config.child ("tmplates").child("tmplate");
@@ -151,7 +165,8 @@ function GetTemplateInfoX ()
         modulArray[tmplate[i].@model.toString()] = path;
 
     }
-    
+
+	g_modulArray = modulArray;
     return  modulArray;   
 }
 

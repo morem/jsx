@@ -68,3 +68,25 @@ function File_SkanGetDir (path)
 {
 
 }
+
+function File_GetFileGMTTime (path)
+{
+	var file = new File (path);
+	if (!file.exists)return 0;
+	return Date.parse (file.modified);
+}
+
+
+function File_IsFileNewThan (path, pathArray)
+{
+	var timeOrg =  File_GetFileGMTTime (path);
+	var timeArray = new Array ();
+
+	for (var i in pathArray)
+	{
+		if (timeOrg < File_GetFileGMTTime (pathArray [i]))return false;	
+	}
+	return true;
+}
+
+

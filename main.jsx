@@ -6,7 +6,6 @@
 #include "model.jsx"
 #include "layer.jsx"
 #include "file.jsx"
-#include "file.jsx"
 #include "doc.jsx"
 
 
@@ -68,7 +67,18 @@ function ChangeProductSize()
             ChangePicSize (type_x[i], 2195,1568);
     }
  }
-
+function MAIN_GetFileSize (path)
+{
+    var a = [0,0]
+    var file = new File (path);
+    var doc = app.open (file);
+    var width = doc.width.as("px");
+    var height = doc.height.as("px");
+    a[0] = width;
+    a[1] = height;
+    CloseDoc(doc);
+    return a;
+}
 function IdentAPic (templatePath,  identPath,  orgPath,  targetPath,  name, use_for)
 {
         if (!File_CheckFileExist(orgPath))return ;
@@ -83,7 +93,8 @@ function IdentAPic (templatePath,  identPath,  orgPath,  targetPath,  name, use_
                                                 AnchorPosition.TOPLEFT);
         
         duplicateFrom (templateDoc, identPath, OpenDocumentType.JPEG,  "mask");
-        var maskWidth = GetLayerWidth(templateDoc.artLayers["mask"]);
+        //var maskWidth = GetLayerWidth(templateDoc.artLayers["mask"]);
+		var maskWidth = MAIN_GetFileSize(identPath)[0];
         templateDoc.artLayers["mask"].resize (  templateWidth/maskWidth*100, 
                                                 templateWidth/maskWidth*100,
                                                 AnchorPosition.TOPLEFT);
@@ -314,6 +325,10 @@ function BuildAllPic2 (summaryInfo,bShadow)
                 iX ++)
         {
             var imageIndex = (iX + iY * lines);
+			if (!CheckFileExists(imageNameArray[imageIndex].targetPath.compent)&&
+				!CheckFileExists(imageNameArray[imageIndex].targetPath.compentWithShadow))
+				continue;
+            
             var doc = app.open (templateFile);
 
             if (bShadow == false)
@@ -541,6 +556,7 @@ function BuildMainPicture ()
         var headInfo = GetHeaderGroupInfo (i);
         if (CompareString(headInfo.attr,"face2") ||
             CompareString(headInfo.attr,"face")){
+            if (null == headInfo.image)continue;
             if (! File_CheckFileExist (headInfo.image.path))continue;
 
             GetAComponent (headInfo.templatePath,
@@ -605,12 +621,12 @@ function BuildOptionPicture(imageInfo)
         HorzMiddleLayerByLayer (doc, doc.layers["desp_area"], doc.layers["name"]); 
     if (CheckLayerExist (doc, "desp"))
         HorzMiddleLayerByLayer (doc, doc.layers["desp_area"], doc.layers["desp"]); 
-
+/*
     if (null != imageInfo.optionBackgroundPath){
         InsertPicFullLayer (doc, imageInfo.optionBackgroundPath,OpenDocumentType.JPEG, "bk_end");
         doc.artLayers["bk_end"].move ( doc.artLayers["background"], ElementPlacement.PLACEAFTER);
         doc.artLayers["bk_end"].visible = false;
-    }
+    }*/
 
     if (CheckLayerExist (doc, "water"))
         doc.layerSets["water"].move (doc.artLayers[0],ElementPlacement.PLACEBEFORE);

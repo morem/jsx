@@ -4,13 +4,15 @@
 #include "model.jsx"
 #include "layer.jsx"
 #include "file.jsx"
-#include "file.jsx"
 #include "doc.jsx"
 #include "csv.jsx"
 #include "msg.jsx"
+#include "dep.jsx"
 
 
 var pPerCM = 100;
+var g_caseInfo = null;
+var bWhiteLine = false;
 
 function PM_MMToPix (mm)
 {
@@ -29,8 +31,28 @@ function PM_UnInit ()
 
 }
 
+function PM_GetPositionPath ()
+{
+
+    return PM_GetConfigPath() + "./position_"+ work_mode +".csv";
+}
+
+function PM_GetOrgPositionPath ()
+{
+
+    return PM_GetConfigPath() + "./org"+ ".csv";
+}
+
+
 function PM_GetCaseInfo (caseID)
 {
+    if (g_caseInfo != null){
+	    if (typeof (g_caseInfo[caseID]) != 'undefined')
+			return g_caseInfo[caseID];
+		else 
+			return null;	
+	}
+	
     var s_init = new Object ();
     s_init.path = PM_GetCaseInfoPath();
     s_init.data_header_index = 0;
@@ -90,11 +112,9 @@ function PM_GetCaseInfo (caseID)
 
 
     var caseIDInfo = CSV_Parse_Direct (s_init);
-    for (x in caseIDInfo)
-    {
-        if (true == CompareString(x,caseID))return caseIDInfo[x];
-    }
-    return false;
+	g_caseInfo = caseIDInfo;
+    if (typeof (caseIDInfo[caseID]) != 'undefined')return caseIDInfo[caseID];
+    return null;
 
 }
 
@@ -111,7 +131,7 @@ function PM_GetElementTemplate(caseID)
 		CompareString(modul,"i5c") ||
 		CompareString(modul,"i4s"))
 	{
-	    return  PM_GetConfigPath() + "element_min.tif";
+	    return  PM_GetConfigPath() + "element_mini.tif";
 	}
 
     return  PM_GetConfigPath() + "element.tif";
@@ -129,7 +149,12 @@ function PM_GetConfigPath ()
 
 function PM_GetShapePath (caseID)
 {
-    return PM_GetConfigPath () + "dt/"+ PM_GetModulFromCaseID(caseID) + ".tif"
+	var p = PM_GetConfigPath () + "dt/"+ caseID + ".tif";
+
+	if (File_CheckFileExist(p))
+		return p;
+    else
+		return PM_GetConfigPath () + "dt/"+ PM_GetModulFromCaseID(caseID) + ".tif"
 }
 
 function PM_TempDIr ()
@@ -140,6 +165,34 @@ function PM_TempDIr ()
 function PM_GetPicLabPath()
 {
     return File.decode(GetParam("PIC_LIB"));
+
+}
+
+
+function PM_GetMostFitPicPath (caseID, dirName)
+{
+	var ret = null;
+	var path = null;
+	var p = 48;
+	path = dirName + "/" + PM_GetModulFromCaseID(caseID) + ".tif";
+	if (File_CheckFileExist(path))return path;
+	
+	var caseInfo = PM_GetCaseInfo (caseID);
+	var t = caseInfo["画面宽"]/caseInfo["画面长"]*100;
+	if (Utils_ABS (t-48) > Utils_ABS (t-52))
+	{
+		path = dirName + "/" + "10052.tif";
+		p = 52;
+	}
+	else
+		path = dirName + "/" + "10048.tif";
+	
+	if (File_CheckFileExist(path))return path;
+
+	if (p == 52) path = dirName + "/" +  "i4s.tif";
+	if (p == 48) path = dirName + "/" +  "i5s.tif";
+	if (File_CheckFileExist(path))return path;	
+	return null;
 
 }
 
@@ -159,7 +212,7 @@ function PM_NumOrNameToPath (caseID, picID)
             MSG_OutPut("重复的编号:" + picID);
 			return null;
         };
-        var path = array[0].fsName + "/" + PM_GetModulFromCaseID(caseID) + ".tif";
+		var path = PM_GetMostFitPicPath (caseID, array[0].fsName );
         return path;
     }
 
@@ -172,7 +225,7 @@ function PM_NumOrNameToPath (caseID, picID)
             MSG_OutPut("重复的图案名称:" + picID);
 			return null;
         };
-        var path = array[0].fsName + "/" + PM_GetModulFromCaseID(caseID) + ".tif";
+		var path = PM_GetMostFitPicPath (caseID, array[0].fsName );
         return path;
     }
 
@@ -223,6 +276,7 @@ function PM_Create(caseID, mainSrc, spotSrc, targetPath, type, orgXOffset_mm, or
 
 	
 	PM_MoveFileToElement (doc, caseID, mainSrc, "main", orgXOffset_mm, orgYOffset_mm);
+	/*
     if (CompareString(type, "picture"))
    {
 	    app.doAction ("getCurrentLayerSelection", "sys");
@@ -256,7 +310,7 @@ function PM_Create(caseID, mainSrc, spotSrc, targetPath, type, orgXOffset_mm, or
 		//doc.selection.contract (new UnitValue (4, "px"));
 	    app.doAction ("buildSpotBySelection", "sys");
 	}
-	
+	*/
 
     var targetFile = new File (targetPath);
     doc.saveAs(targetFile, GetTIFFParam(), true);
@@ -313,10 +367,13 @@ function PM_ProAdaptCase (srcPath, caseID, fix)
 
 
     doc.pathItems["case_path"].makeSelection (0);
-    doc.selection.invert();
-    doc.selection.clear();
-    doc.selection.clear();
-
+    try{
+	    doc.selection.invert();
+	    doc.selection.clear();
+    	doc.selection.clear();
+    }
+	catch(err)
+	{}
     var targetFile = new File (PM_TempDIr()+ tempFileName);
     doc.saveAs(targetFile, GetTIFFParam(), true);
     CloseDoc(doc);
@@ -326,18 +383,7 @@ function PM_ProAdaptCase (srcPath, caseID, fix)
 }
 
 
-/*
-function PM_SetDocLayerVaildAndCreateANewTempFile (doc, arrayLayerVaild)
-{
-    SetDocLayerVaild (doc, arrayLayerVaild);
-
-    var targetPath = PM_TempDIr()+"./tmp" + Utils_GetTempNum() + ".tif";
-    var targetFile = new  File(targetPath);
-    doc.saveAs (targetFile, GetTIFFParam(), true);
-	return targetPath;
-}*/
-
-function PM_SetDocLayerByType (doc, type)
+function PM_SetDocLayerByTypeAndGetTempFile (doc, type)
 {
     if (CompareString("fudiao",type))
    	{
@@ -348,6 +394,16 @@ function PM_SetDocLayerByType (doc, type)
 			doc.artLayers["浮雕层"].visible = true;
    		}
 		
+	}
+
+	if (CompareString("loukong",type))
+	{
+   		if (doc.artLayers.length > 1)
+		{
+		    for (var j = 0; j < doc.artLayers.length; j ++)
+		            doc.artLayers[j].visible = false;
+			doc.artLayers["主体层"].visible = true;
+   		}
 	}
 
     var targetPath = PM_TempDIr()+"./tmp" + Utils_GetTempNum() + ".tif";
@@ -366,8 +422,33 @@ function PM_GetCasePic (srcPath, caseID, type)
 
     if (CompareString("picture",type))
     {
-       // pathTemp = PM_SetDocLayerVaildAndCreateANewTempFile (doc, ["主体层","背景层", "图案层"]);
-      	pathTemp = PM_SetDocLayerByType (doc, "picture");
+      	pathTemp = PM_SetDocLayerByTypeAndGetTempFile (doc, "picture");
+    }
+	
+    if (CompareString("loukong",type))
+    {
+    	if (!CheckLayerExist (doc, "主体层"))
+		{
+			CloseDoc(doc);
+			return null;
+		}
+		if (CheckLayerExist(doc,"主体层"))
+		{
+			duplicateLayerFrom (doc, "镂空层", doc, "主体层");
+			doc.activeLayer = doc.artLayers["镂空层"];
+			doc.activeLayer.visible = true;
+			doc.selection.selectAll ();
+			var color = new SolidColor();
+			var cmyk = new CMYKColor();
+	        cmyk.black = 100;
+	        cmyk.cyan = 100;
+	        cmyk.magenta = 100;
+	        cmyk.yellow = 100;
+	        color.cmyk = cmyk;
+			doc.selection.stroke (color,4, StrokeLocation.CENTER);
+	      	pathTemp = PM_SetDocLayerByTypeAndGetTempFile (doc, "loukong");
+		}
+    
     }
     
     if (CompareString("fudiao",type))
@@ -391,8 +472,7 @@ function PM_GetCasePic (srcPath, caseID, type)
 	        color.cmyk = cmyk;
 			doc.selection.stroke (color,4, StrokeLocation.CENTER);
 		}
-		//pathTemp = PM_SetDocLayerVaildAndCreateANewTempFile (doc, ["浮雕层"]);
-		pathTemp = PM_SetDocLayerByType (doc, "fudiao")
+		pathTemp = PM_SetDocLayerByTypeAndGetTempFile (doc, "fudiao")
     }
 	CloseDoc(doc);
 
@@ -409,7 +489,7 @@ function PM_WORK(caseID, picMask, type, targetPath, orgXOffset_mm, orgYOffset_mm
     var srcPath = PM_NumOrNameToPath (caseID, picMask);  
 	if (srcPath == null)
 	{
-		MSG_OutPut("在获取图库具体数据时产生了一个错误");
+		MSG_OutPut("没有找到所需要的图案文件");
 		return null;
 	}
 
@@ -421,30 +501,65 @@ function PM_WORK(caseID, picMask, type, targetPath, orgXOffset_mm, orgYOffset_mm
 
 	/*保证srcPath是存在的了*/
 
+	var srcProPicTemp = null;
+	var srcSpotTemp = null;
+	
 	if (typeof(targetPath) == "undefined")
 	   	targetPath = PM_GetTargetPath(caseID, picMask, type);
 	
-    var srcProPicTemp  = PM_GetCasePic (srcPath, caseID, "picture");
+	if (CompareString(type,"loukong"))
+	{
+    	srcProPicTemp  = PM_GetCasePic (srcPath, caseID, "loukong");
+		srcSpotTemp = srcProPicTemp;
 
-	var srcProFudiaoTemp  = null;
-	if (CompareString(type, "fudiao"))
-	    srcProFudiaoTemp  = PM_GetCasePic (srcPath, caseID,"fudiao");
-
-    var elementPath = PM_Create (caseID, srcProPicTemp, srcProFudiaoTemp, targetPath, type, orgXOffset_mm, orgYOffset_mm);
+	}else
+	{
+    	srcProPicTemp  = PM_GetCasePic (srcPath, caseID, "picture");
+		if (CompareString(type, "fudiao"))
+		    srcSpotTemp  = PM_GetCasePic (srcPath, caseID,"fudiao");
+	}
+    var elementPath = PM_Create (caseID, srcProPicTemp, srcSpotTemp, targetPath, type, orgXOffset_mm, orgYOffset_mm);
     PM_UnInit ();
     return elementPath;
 }
 
+function PM_GetAllDepPath (caseID, picMask)
+{
+	var a = new Array ();
+	a.push (PM_NumOrNameToPath (caseID, picMask));
+	a.push (PM_GetElementTemplate(caseID));
+	a.push (PM_GetPositionPath ());
+	a.push (PM_GetCaseInfoPath ());
+	a.push (PM_GetShapePath (caseID));
+	a.push (PM_GetOrgPositionPath ());
+	return a;
+}
 
+var lastCaseID = null;
 
 function PM_WORK_Ext (info, orgXOffset_mm, orgYOffset_mm)
 {
 	var caseID = info["素材编号"];
 	var picMask = info["图案编号"];
 	var type = info["工艺"];
+
+	//if (typeof(caseID) == 'undefined')caseID = lastCaseID;
+
+	//lastCaseID = caseID;
+
+	if (CompareString(type,"双面"))bWhiteLine = true;
+	if (caseID.indexOf ("gt")!= -1)bWhiteLine = true;
+	if (caseID.indexOf ("tms") != -1)bWhiteLine = true;
 	
     if (CompareString(type,"普通") || CompareString(type,"双面") || CompareString(type,""))
     {
+		if (File_CheckFileExist(info.targetPath))
+		{
+			var depArray = PM_GetAllDepPath (caseID, picMask);
+			if (DEP_CheckFileNewThan (info.targetPath, depArray) == true)return true;
+		}
+
+	
 		var ret = PM_WORK (caseID, picMask, "picture", info.targetPath, orgXOffset_mm, orgYOffset_mm);
 		if (ret == null)
 		{
@@ -452,6 +567,16 @@ function PM_WORK_Ext (info, orgXOffset_mm, orgYOffset_mm)
 			return false;
 		}
     }
+	
+    if (CompareString(type,"镂空"))
+    {
+		var ret = PM_WORK (caseID, picMask, "loukong", info.targetPath, orgXOffset_mm, orgYOffset_mm);
+		if (ret == null)
+		{
+			MSG_OutPut("镂空的生成发生错误: caseID=" + caseID + "    picMask=" + picMask);
+			return false;
+		}
+    }	
 
     if (CompareString(type,"双面浮雕")||CompareString(type,"浮雕"))
 	{

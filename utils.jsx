@@ -16,7 +16,7 @@ function CompareString (str1, str2)
 
 function ErrorOut (err)
 {
-    alert (err);
+    //alert (err);
 }
 
 
@@ -98,4 +98,9 @@ function Utils_GetTempNum ()
 
 }
 
+function Utils_ABS (n)
+{
+	if (n < 0)n = n*(-1);
+	return n;
+}
 

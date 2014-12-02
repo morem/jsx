@@ -27,7 +27,7 @@ function Jigsaw_Init (dir_t, row_t, line_t, eWidth_t,eHeight_t)
 
 function Jigsaw_GetPath (pre, index)
 {
-    return dir + "./pre" + index%(row*line);
+    return dir + "./pre" + index;
 }
 
 function Jigsaw_Build (images)
@@ -49,7 +49,7 @@ function Jigsaw_Build (images)
 
         if ((i > 0 &&(0 == (i + 1)%(row*line))) || (i == (images.length - 1)))
         {
-            var targetFile = new File (Jigsaw_GetPath("s",  (i + 1)/parseInt(row*line)));
+            var targetFile = new File (Jigsaw_GetPath("s",  parseInt((i+row*line - 1)/( row*line))));
             doc.saveAs (targetFile, GetJPGParam(), true);
             CloseDoc (doc);
             doc = null;

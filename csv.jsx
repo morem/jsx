@@ -31,12 +31,13 @@ function CSV_ParseLine (str)
     return data;
 }
 
+
 function CSV_Build (data, path)
 {
     
     var file = new File (path);
     file.open ("w");
-    
+    /*
     for  (var i=0; i < data.length ; i ++)
     {
         var str = "";
@@ -48,7 +49,26 @@ function CSV_Build (data, path)
         }
          output (str);
         file.writeln (str);
+    }*/
+
+	var row = null;
+	var line = null;
+    for  (row in data)
+    {
+        var str = "";
+		var j = 0;
+        
+        for (line in data[row])
+        {
+            str = str + "\"" + data[row][line] + "\"";
+            if (j < data[row].length - 1)str = str + ",";
+			j ++;
+        }
+         //output (str);
+        file.writeln (str);
     }
+
+	
     file.close ();
 }
 
@@ -232,6 +252,7 @@ function CSV_Parse_Direct(s_init)
     //s_init.data_header[0..900].format = 'n' 'p' 's' 't'
     //n Êý×ÖÐ¡Êý
     var dataStruct = new Array ();
+	if (!File_CheckFileExist(s_init.path)) return dataStruct;
     var csv_data = CSV_Load (s_init.path);
     CSV_GetHeaderInfo (s_init, csv_data);
 
