@@ -110,6 +110,11 @@ function PD_GetDependData ()
     e.format = 's';
     s_init.data_header.push (e);
 
+    var e  = new Object();
+    e.text = "时间";
+    e.format = 's';
+    s_init.data_header.push (e);
+
     g_PD_dependData =   CSV_Parse_Direct (s_init);
 	return g_PD_dependData;
 }
@@ -130,6 +135,9 @@ function PD_AddDependData (orderID)
 {
 	var t = PD_GetDependData ();
 	t [orderID] = new Object ();
+	t [orderID]["时间"] = (new Date()).valueOf();
+	t [orderID]["订单编号"] = orderID;
+	
 	g_PD_DepDirty = true;
 	return ;
 }
@@ -139,10 +147,12 @@ function PD_SaveDependData ()
 	if (!g_PD_DepDirty)return;
 	var t = PD_GetDependData ();
 	var csvData = new Array ();
-	csvData[0] = ["订单编号"];
+	csvData[0] = ["订单编号",  "时间"];
 	for (x in t)
 	{
-		csvData.push ([x]);
+		if (typeof(t[x]["时间"]) == 'undefined')t[x]["时间"] = (new Date()).valueOf();
+		if ((new Date()).valueOf() - t[x]["时间"] > 5*24*60*60*1000)continue;
+			csvData.push ([t[x]["订单编号"],t[x]["时间"]]);
 	}
 	CSV_Build (csvData, PD_GetDependPath() );
 
