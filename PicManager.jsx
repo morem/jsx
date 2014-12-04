@@ -437,7 +437,7 @@ function PM_GetCasePic (srcPath, caseID, type)
 			duplicateLayerFrom (doc, "ïÎ¿Õ²ã", doc, "Ö÷Ìå²ã");
 			doc.activeLayer = doc.artLayers["ïÎ¿Õ²ã"];
 			doc.activeLayer.visible = true;
-			doc.selection.selectAll ();
+			/*doc.selection.selectAll ();
 			var color = new SolidColor();
 			var cmyk = new CMYKColor();
 	        cmyk.black = 100;
@@ -445,7 +445,7 @@ function PM_GetCasePic (srcPath, caseID, type)
 	        cmyk.magenta = 100;
 	        cmyk.yellow = 100;
 	        color.cmyk = cmyk;
-			doc.selection.stroke (color,4, StrokeLocation.CENTER);
+			doc.selection.stroke (color,4, StrokeLocation.CENTER);*/
 	      	pathTemp = PM_SetDocLayerByTypeAndGetTempFile (doc, "loukong");
 		}
     
@@ -598,3 +598,4 @@ function PM_WORK_Ext (info, orgXOffset_mm, orgYOffset_mm)
 
 }
 
+PM_WORK("i6p_gt", "¼ú¼úÍÃ", "loukong", "C:\\aa.tif",0,0)
