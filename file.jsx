@@ -1,4 +1,7 @@
 ﻿
+#include "path.jsx"
+#include "utils.jsx"
+
 function File_SaveAs (doc, targetPath, length)
 {
 
@@ -89,4 +92,15 @@ function File_IsFileNewThan (path, pathArray)
 	return true;
 }
 
+
+function File_GetTemp (src)
+{
+	var tmpDir = PATH_GetTempDirectory ();
+	var getName = Utils_GetFileNameFromPath (src);
+	var targetPath = tmpDir + getName;
+
+	var file = new File (src);
+	file.copy (targetPath);	
+	return targetPath;
+}
 

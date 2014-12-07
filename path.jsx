@@ -35,4 +35,18 @@ function PATH_GetPathInDirectory (dir, mask)
 	return array;	
 }
 
+function PATH_GetTempDirectory ()
+{
+	return PATH_GetWorkPath () + "./tmp/";
+}
+
+var g_path_configPath = null;
+function PATH_GetConfigPath ()
+{
+	if (g_path_configPath != null) return g_path_configPath;
+	g_path_configPath = File.decode(GetParam("CONFIG_DIRECTORY"));
+    return g_path_configPath;
+}
+
+
 

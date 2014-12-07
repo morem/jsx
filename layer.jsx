@@ -73,6 +73,13 @@ function GetTextLayerContexts(doc, name)
         return null;
 }
 
+function Layer_SetVisible (doc, name, visible)
+{
+    if (CheckLayerExist (doc, name))
+		doc.artLayers[name].visible = visible;
+}
+
+
 function SetDocLayerVaild (doc, arrayName)
 {   
     var i = 0;
@@ -96,6 +103,42 @@ function SetDocLayerVaild (doc, arrayName)
 
 }
 
+
+function Layer_NewLayerAndDot (doc)
+{
+	var layer = doc.artLayers.add ();
+	var width = doc.width.as("px");
+	var height = doc.height.as("px");
+	layer.name = "dot";
+
+	var region = Array (
+				Array(0,0),Array(1,0),
+				Array(1,1),	Array(0,1),			
+				);
+
+	doc.selection.select (region);
+	var c = new SolidColor;
+	c.cmyk.black = 100;
+	c.cmyk.cyan = 0;
+	c.cmyk.magenta = 0;
+	c.cmyk.yellow = 0;
+	doc.selection.fill (c);
+
+	var region = Array (
+				Array(width - 1,height - 1),Array(width, height - 1),
+				Array(width , height),	Array(width - 1,height),
+				);
+
+	doc.selection.select (region);
+	c = new SolidColor;
+	c.cmyk.black = 100;
+	c.cmyk.cyan = 0;
+	c.cmyk.magenta = 0;
+	c.cmyk.yellow = 0;
+	doc.selection.fill (c);
+	
+	return layer;
+}
 
 function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
 {

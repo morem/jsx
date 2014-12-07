@@ -11,12 +11,6 @@
 
 var work_mode = "mini";
 
-function PM_GetConfigPath ()
-{
-    return File.decode(GetParam("CONFIG_DIRECTORY"));
-}
-
-
 function PP_GetPlanPath ()
 {
 
@@ -26,18 +20,18 @@ function PP_GetPlanPath ()
 function PP_GetPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./position_"+ work_mode +".csv";
+    return PATH_GetConfigPath() + "./position_"+ work_mode +".csv";
 }
 function PP_GetOrgPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./org"+ ".csv";
+    return PATH_GetConfigPath() + "./org"+ ".csv";
 }
 
 function PP_GetPageTempatePath ()
 {
 
-    return PM_GetConfigPath() + "./page_" +work_mode+ ".tif";
+    return PATH_GetConfigPath() + "./page_" +work_mode+ ".tif";
 }
 
 
