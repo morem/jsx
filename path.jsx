@@ -1,5 +1,3 @@
-ï»¿
-
 function PATH_GetDepDirectory ()
 {
 	return "/c/dep/";
@@ -46,6 +44,32 @@ function PATH_GetConfigPath ()
 	if (g_path_configPath != null) return g_path_configPath;
 	g_path_configPath = File.decode(GetParam("CONFIG_DIRECTORY"));
     return g_path_configPath;
+}
+
+function PATH_GetPositionPath ()
+{
+
+    return PATH_GetConfigPath() + "./position_"+ work_mode +".csv";
+}
+
+
+function PATH_GetPlanPath ()
+{
+
+    return GetWorkPath() + "Éú²ú¼Æ»®.csv";
+}
+
+function PATH_GetOrgPositionPath ()
+{
+
+    return PATH_GetConfigPath() + "./org"+ ".csv";
+}
+
+
+function PATH_GetPageTempatePath ()
+{
+
+    return PATH_GetConfigPath() + "./page_" +work_mode+ ".tif";
 }
 
 

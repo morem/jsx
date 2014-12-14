@@ -10,14 +10,8 @@
 #include "dep.jsx"
 
 
-var pPerCM = 100;
 var g_caseInfo = null;
 var bWhiteLine = false;
-
-function PM_MMToPix (mm)
-{
-    return mm*1.0*pPerCM / 10;
-}
 
 function PM_Init ()
 {
@@ -320,10 +314,9 @@ function PM_WORK(caseID, picMask, layer)
     return elementPath;
 }
 
-
-
-
+/*
 PM_WORK("i6p_gt", "ผ๚ผ๚อร", "main")
 PM_WORK("i6p_gt", "ผ๚ผ๚อร", "background")
 PM_WORK("i6p_gt", "ผ๚ผ๚อร", "relief")
 PM_WORK("i6p_gt", "ผ๚ผ๚อร", "all")
+*/

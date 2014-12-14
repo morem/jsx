@@ -7,41 +7,19 @@
 #include "file.jsx"
 #include "doc.jsx"
 #include "csv.jsx"
+#include "pos.jsx"
 #include "PicManager.jsx"
 
 var work_mode = "mini";
-
-function PP_GetPlanPath ()
-{
-
-    return GetWorkPath() + "生产计划.csv";
-}
-
-function PP_GetPositionPath ()
-{
-
-    return PATH_GetConfigPath() + "./position_"+ work_mode +".csv";
-}
-function PP_GetOrgPositionPath ()
-{
-
-    return PATH_GetConfigPath() + "./org"+ ".csv";
-}
-
-function PP_GetPageTempatePath ()
-{
-
-    return PATH_GetConfigPath() + "./page_" +work_mode+ ".tif";
-}
 
 
 function PP_GetCaseInfo ()
 {
     var s_init = new Object ();
 
-    if (!File_CheckFileExist(PP_GetPlanPath()))return 0;
+    if (!File_CheckFileExist(PATH_GetPlanPath()))return 0;
     
-    s_init.path = PP_GetPlanPath();
+    s_init.path = PATH_GetPlanPath();
     s_init.data_header_index = 0;
     s_init.data_start = 1;
     s_init.key = "素材编号";
@@ -72,56 +50,15 @@ function PP_GetCaseInfo ()
     
 }
 
-function PP_GetPosition ()
-{
-    var s_init = new Object ();
-
-    if (!File_CheckFileExist(PP_GetPositionPath()))return 0;
-    
-    s_init.path = PP_GetPositionPath();
-    s_init.data_header_index = 0;
-    s_init.data_start = 1;
-    s_init.key = "pos";
-    s_init.data_header = new Array ();
-
-    var e  = new Object();
-    e.text = "pos";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "x";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "y";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "x_offset";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "y_offset";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-
-
-    return  CSV_Parse_Direct (s_init);
-}
 
 
 function PP_GetOrgPosition()
 {
     var s_init = new Object ();
 
-    if (!File_CheckFileExist(PP_GetOrgPositionPath()))return 0;
+    if (!File_CheckFileExist(PATH_GetOrgPositionPath()))return 0;
     
-    s_init.path = PP_GetOrgPositionPath();
+    s_init.path = PATH_GetOrgPositionPath();
     s_init.data_header_index = 0;
     s_init.data_start = 1;
     s_init.key = null;
@@ -136,7 +73,6 @@ function PP_GetOrgPosition()
     e.text = "y_offset";
     e.format = 's';
     s_init.data_header.push (e);
-
 
 
     return  CSV_Parse (s_init);
@@ -159,21 +95,6 @@ function PP_ProCaseInfo (caseInfo)
 	}
 }
 
-var pPerMM = 10;
-
-function PM_MMToPix (mm)
-{
-    return mm*1.0*pPerMM;
-}
-
-function PP_GetCodinateByPath (cInfo, pos)
-{
-	var c = cInfo [pos];
-	//if (pos == 0)return [c.x*1, c.y*1];
-	return [c.x*1 - PM_MMToPix(c.x_offset), c.y*1 + PM_MMToPix (c.y_offset*1)];
-
-}
-	
 var posArray= [1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 			   1,1,1,1,1,1,1,1,1,1,1,1,1,1];
 
@@ -223,11 +144,16 @@ function PP_PageBuildWithCMYKW (doc, targetPath)
 
 function PP_PageBuild (caseInfo, cInfo)
 {
-	var templatePath = PP_GetPageTempatePath ();
-    var file = new File (templatePath);
-    var doc = app.open (file);
+	preferences.rulerUnite = Units.MM;
+	
+	var templatePath = PATH_GetPageTempatePath ();
+
+	var doc = app.documents.add (1000,1000, 10);
+   // var file = new File (templatePath);
+   // var doc = app.open (file);
 	var posSum = 14*3;
 	var posCur = 0;
+	var org = PP_GetOrgPosition ();
 	
     for (var caseID in caseInfo)
    	{
@@ -240,8 +166,8 @@ function PP_PageBuild (caseInfo, cInfo)
 				var layerName = "element" + posCur ;
 				duplicateFromNew(doc, info .targetPath, layerName);
 				
-				var xOffset = PP_GetCodinateByPath(cInfo, posCur)[0];
-				var yOffset = PP_GetCodinateByPath(cInfo, posCur)[1];
+				var xOffset = POS_GetCodinateByPath(cInfo, posCur)[0] - CONFIG_MMToPix(org[0].x_offset);
+				var yOffset = POS_GetCodinateByPath(cInfo, posCur)[1] + CONFIG_MMToPix(org[0].y_offset);
 				var layer = doc.artLayers[layerName];
 				
 				var xOffset = xOffset - layer.bounds[2].as("px");
@@ -308,6 +234,48 @@ function PP_PageBuild (caseInfo, cInfo)
 	CloseDoc (doc);
 }
 
+
+function PP_GetPosition ()
+{
+    var s_init = new Object ();
+
+    if (!File_CheckFileExist(PATH_GetPositionPath()))return 0;
+    
+    s_init.path = PATH_GetPositionPath();
+    s_init.data_header_index = 0;
+    s_init.data_start = 1;
+    s_init.key = "pos";
+    s_init.data_header = new Array ();
+
+    var e  = new Object();
+    e.text = "pos";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "x";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "y";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "x_offset";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "y_offset";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    return  CSV_Parse_Direct (s_init);
+}
+
+
 function PP_Work2(caseID)
 {
     var info = PP_GetCaseInfo ();
@@ -336,16 +304,13 @@ function PP_Work()
 	//work_mode = "big";
 	
 	PP_ProCaseInfo (info);
-	//var c = PP_GetPosition ();
-	var org = PP_GetOrgPosition ();
-	
 
     for (var caseID in info)
     {
         for (var i = 0; i < info[caseID].length; i ++)
         {           
         	//try {
-            	var ret = PM_WORK_Ext (info[caseID][i], org[0].x_offset, org[0].y_offset);
+            	var ret = PM_WORK (caseID, info[caseID][i]["图案编号"], "all");
             	if (ret == false)return false;
         	//}
 			//catch (err){

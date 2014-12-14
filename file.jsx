@@ -96,8 +96,9 @@ function File_IsFileNewThan (path, pathArray)
 function File_GetTemp (src)
 {
 	var tmpDir = PATH_GetTempDirectory ();
-	var getName = Utils_GetFileNameFromPath (src);
-	var targetPath = tmpDir + getName;
+	var fileName = Utils_GetFileNameNoExtFromPath (src);
+	var fileExt  = Utils_GetFileExtFromPath (src);
+	var targetPath = tmpDir + fileName + "_" + Utils_GetTempNum () + "." + fileExt;
 
 	var file = new File (src);
 	file.copy (targetPath);	

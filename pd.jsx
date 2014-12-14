@@ -408,6 +408,7 @@ function PD_Work ()
 
 	for (orderID in array)
 	{
+	
 		if (reBuildDep == true)
 		{
 			if (null == array[orderID][0]["订单状态"].match("已发货"))continue;
@@ -418,7 +419,8 @@ function PD_Work ()
 				null == array[orderID][0]["订单状态"].match("已付款"))continue;
 			
 		}
-       if (PD_CheckHaveDone (orderID))continue ;
+		
+       	if (PD_CheckHaveDone (orderID))continue ;
 		
 		for (goodIndex in array[orderID])
 		{
