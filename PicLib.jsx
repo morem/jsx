@@ -50,7 +50,8 @@ function PicLib_GetID (path)
 function PicLib_GetName (path)
 {
     var name = Utils_GetFileNameFromPath (path);
-    return name.split(" ")[1];
+	var posStart = name.indexOf (" ", 0) + 1;
+    return name.slice(posStart);
  }
 
 
@@ -202,4 +203,13 @@ function PicLib_Work (sortType)
 
 //PicLib_Work ("pingyin");
 //PicLib_Work ("number");
+/*
+function work()
+{
+var t = PicLib_GetName ("./M099 kiss me"); 
+var x = t;
+}
+
+work();
+*/
 
