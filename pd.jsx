@@ -10,6 +10,8 @@
 #include "path.jsx"
 #include "picLib.jsx"
 
+var g_pdTimeTag = (new Date()).valueOf();
+
 function PD_Init ()
 {
 
@@ -88,7 +90,7 @@ function PD_GetDependPath ()
 
 function PD_GetOutPutPath ()
 {
-	return PATH_GetWorkPath () + "order_" + (new Date()).valueOf() + ".csv"
+	return PATH_GetWorkPath () + "order_" + g_pdTimeTag + ".csv"
 }
 
 var g_PD_dependData = null;
@@ -135,7 +137,7 @@ function PD_AddDependData (orderID)
 {
 	var t = PD_GetDependData ();
 	t [orderID] = new Object ();
-	t [orderID]["时间"] = (new Date()).valueOf();
+	t [orderID]["时间"] = g_pdTimeTag;
 	t [orderID]["订单编号"] = orderID;
 	
 	g_PD_DepDirty = true;
@@ -150,8 +152,8 @@ function PD_SaveDependData ()
 	csvData[0] = ["订单编号",  "时间"];
 	for (x in t)
 	{
-		if (typeof(t[x]["时间"]) == 'undefined')t[x]["时间"] = (new Date()).valueOf();
-		if ((new Date()).valueOf() - t[x]["时间"] > 5*24*60*60*1000)continue;
+		if (typeof(t[x]["时间"]) == 'undefined')t[x]["时间"] = g_pdTimeTag;
+		if (g_pdTimeTag - t[x]["时间"] > 5*24*60*60*1000)continue;
 			csvData.push ([t[x]["订单编号"],t[x]["时间"]]);
 	}
 	CSV_Build (csvData, PD_GetDependPath() );
@@ -315,7 +317,7 @@ function PD_Build_Init ()
 {
 	var row = new Array ();
      var i = 0;
-    for ( i = 0; i < 300; i ++)
+    for ( i = 0; i < 1000; i ++)
 	{
 		var line = ["","","","","","","","","","","","","","","","","","",
 					"","","","","","","","","","","","","","","","","","",
@@ -408,6 +410,7 @@ function PD_Work ()
 
 	for (orderID in array)
 	{
+	
 		if (reBuildDep == true)
 		{
 			if (null == array[orderID][0]["订单状态"].match("已发货"))continue;
@@ -418,7 +421,10 @@ function PD_Work ()
 				null == array[orderID][0]["订单状态"].match("已付款"))continue;
 			
 		}
-       if (PD_CheckHaveDone (orderID))continue ;
+
+		//if (null != array[orderID][0]["订单状态"].match("交易关闭"))continue;
+		//if (null != array[orderID][0]["订单状态"].match("等待发货"))continue;
+       	if (PD_CheckHaveDone (orderID))continue ;
 		
 		for (goodIndex in array[orderID])
 		{
