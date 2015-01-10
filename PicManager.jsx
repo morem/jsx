@@ -40,7 +40,7 @@ function PM_GetPositionPath ()
 function PM_GetOrgPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./org"+ ".csv";
+    return PM_GetConfigPath() + "./org_"+ work_mode + ".csv";
 }
 
 
@@ -76,41 +76,25 @@ function PM_GetCaseInfo (caseID)
     s_init.data_header.push (e);
 
     var e  = new Object();
-    e.text = "画面长";
+    e.text = "主体长";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
-    e.text = "画面宽";
+    e.text = "主体宽";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
-    e.text = "偏移X";
+    e.text = "左右留边";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
-    e.text = "偏移Y";
+    e.text = "上下留边";
     e.format = 's';
     s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "实际像素X";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "实际像素Y";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-    var e  = new Object();
-    e.text = "打印机设置高度";
-    e.format = 's';
-    s_init.data_header.push (e);
-
-
+	
     var caseIDInfo = CSV_Parse_Direct (s_init);
 	g_caseInfo = caseIDInfo;
     if (typeof (caseIDInfo[caseID]) != 'undefined')return caseIDInfo[caseID];
@@ -178,7 +162,9 @@ function PM_GetMostFitPicPath (caseID, dirName)
 	if (File_CheckFileExist(path))return path;
 	
 	var caseInfo = PM_GetCaseInfo (caseID);
-	var t = caseInfo["画面宽"]/caseInfo["画面长"]*100;
+	var picWidth = caseInfo["主体宽"]*1.0 - caseInfo["左右留边"]*2.0;
+	var picLength = caseInfo["主体长"]*1.0 - caseInfo["上下留边"]*2.0
+	var t = picWidth/picLength*100;
 	if (Utils_ABS (t-48) > Utils_ABS (t-52))
 	{
 		path = dirName + "/" + "10052.tif";
@@ -248,12 +234,16 @@ function PM_MoveFileToElement (doc, caseID, srcPath, name, orgXOffset_mm, orgYOf
 
     duplicateFromNew (doc, srcPath, name);
 
+	var picWidth = caseInfo["主体宽"]*1.0 - caseInfo["左右留边"]*2.0;
+	var picLength = caseInfo["主体长"]*1.0 - caseInfo["上下留边"]*2.0
+	var t = picWidth/picLength*100;
+
     var a = PM_GetFileSize(srcPath);
 
     var orgWidth = a[0];
     var orgHeight = a[1];
-    var targetWidth = PM_MMToPix(caseInfo["画面宽"])*1.0;
-    var targetHeight = PM_MMToPix(caseInfo["画面长"])*1.0;
+    var targetWidth = PM_MMToPix(picWidth)*1.0;
+    var targetHeight = PM_MMToPix(picLength)*1.0;
     var layerMain = doc.artLayers[name];
     
     layerMain.resize((targetWidth*100.0)/(orgWidth*1.0), 
@@ -261,9 +251,18 @@ function PM_MoveFileToElement (doc, caseID, srcPath, name, orgXOffset_mm, orgYOf
                                  AnchorPosition.TOPLEFT);
     layerMain.rotate (caseInfo["度数"]);
 
-    var xOffset = doc.width.as("px") - PM_MMToPix(caseInfo["偏移X"]) - layerMain.bounds[2].as("px") - PM_MMToPix (orgXOffset_mm);
-    var yOffset = PM_MMToPix(caseInfo["偏移Y"]) - layerMain.bounds[1].as("px") + PM_MMToPix (orgYOffset_mm);
-
+	var xOffset = 0;
+	var yOffset = 0;
+	if (CompareString(caseInfo["度数"],"0") || CompareString(caseInfo["度数"],"180") || CompareString(caseInfo["度数"],"-180"))
+	{
+    	xOffset = doc.width.as("px") - PM_MMToPix(caseInfo["左右留边"]*1.0) - layerMain.bounds[2].as("px") - PM_MMToPix (orgXOffset_mm);
+    	yOffset = PM_MMToPix(caseInfo["上下留边"]*1.0) - layerMain.bounds[1].as("px") + PM_MMToPix (orgYOffset_mm);
+	}
+	else
+	{
+    	xOffset = doc.width.as("px") - PM_MMToPix(caseInfo["上下留边"]*1.0) - layerMain.bounds[2].as("px") - PM_MMToPix (orgXOffset_mm);
+    	yOffset = PM_MMToPix(caseInfo["左右留边"]*1.0) - layerMain.bounds[1].as("px") + PM_MMToPix (orgYOffset_mm);
+	}
     doc.activeLayer.translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
 	doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
 }

@@ -31,7 +31,7 @@ function PP_GetPositionPath ()
 function PP_GetOrgPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./org"+ ".csv";
+    return PM_GetConfigPath() + "./org_"+ work_mode +  ".csv";
 }
 
 function PP_GetPageTempatePath ()
@@ -179,9 +179,25 @@ function PP_GetCodinateByPath (cInfo, pos)
 	return [c.x*1 - PM_MMToPix(c.x_offset), c.y*1 + PM_MMToPix (c.y_offset*1)];
 
 }
-	
-var posArray= [1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-			   1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+var posArray= [1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1]
+	/*
+var posArray= [1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0,
+				1,0,0,0,0,0,0];
+*/
 
 
 function PP_PageBuildOnlyCMYK (doc,targetPath, bWhiteLine, pos)
@@ -232,7 +248,7 @@ function PP_PageBuild (caseInfo, cInfo)
 	var templatePath = PP_GetPageTempatePath ();
     var file = new File (templatePath);
     var doc = app.open (file);
-	var posSum = 14*3;
+	var posSum = 50;
 	var posCur = 0;
 	
     for (var caseID in caseInfo)
