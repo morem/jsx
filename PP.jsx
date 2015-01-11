@@ -10,6 +10,8 @@
 #include "PicManager.jsx"
 
 var work_mode = "mini";
+var xNum = 0;
+var yNum = 0;
 
 function PM_GetConfigPath ()
 {
@@ -179,6 +181,9 @@ function PP_GetCodinateByPath (cInfo, pos)
 	return [c.x*1 - PM_MMToPix(c.x_offset), c.y*1 + PM_MMToPix (c.y_offset*1)];
 
 }
+//var posArray= [1,0,0,0,1]
+
+
 var posArray= [1,1,1,1,1,1,1,
 			   1,1,1,1,1,1,1,
 			   1,1,1,1,1,1,1,
@@ -187,7 +192,19 @@ var posArray= [1,1,1,1,1,1,1,
 			   1,1,1,1,1,1,1,
 			   1,1,1,1,1,1,1,
 			   1,1,1,1,1,1,1]
-	/*
+
+
+
+/*	  
+var posArray= [1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1,
+			   1,1,1,1,1,1,1]*/
+/*
 var posArray= [1,0,0,0,0,0,0,
 				1,0,0,0,0,0,0,
 				1,0,0,0,0,0,0,
@@ -243,12 +260,38 @@ function PP_PageBuildWithCMYKW (doc, targetPath)
 
 }
 
+function PP_PosArrayPro ()
+{
+	var workMode = GetWorkMode ();
+	if (CompareString(workMode, "test_mini"))
+	{
+		posArray= [1,0,0,0,0,0,1,
+				   0,0,0,0,0,0,0,
+				   0,0,0,0,0,0,0,
+				   0,0,0,0,0,0,0,
+				   0,0,0,0,0,0,0,
+				   0,0,0,0,0,0,0,
+				   1,0,0,0,0,0,1];
+	}
+	if (CompareString(workMode, "test_big"))
+	{
+		posArray= [1,0,0,0,1,
+				   0,0,0,0,0,
+				   0,0,0,0,0,
+				   0,0,0,0,0,
+				   0,0,0,0,0,
+				   1,0,0,0,1];
+	}
+	return posArray.length;
+}
+
 function PP_PageBuild (caseInfo, cInfo)
 {
 	var templatePath = PP_GetPageTempatePath ();
     var file = new File (templatePath);
     var doc = app.open (file);
-	var posSum = 50;
+
+	var posSum = PP_PosArrayPro ();
 	var posCur = 0;
 	
     for (var caseID in caseInfo)
@@ -272,11 +315,11 @@ function PP_PageBuild (caseInfo, cInfo)
 			    layer.translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
 
                  posCur ++;
-                 if (posCur == posSum)
-                 {
-                 	CloseDoc (doc);
-                    return ;
-                 }
+                 //if (posCur == posSum)
+                 //{
+                 //	CloseDoc (doc);
+                 //   return ;
+                 //}
 			}
 		
 		}
@@ -294,7 +337,6 @@ function PP_PageBuild (caseInfo, cInfo)
 	catch(err)
 	{}
 
-
 	app.doAction ("getCurrentLayerSelection", "sys");
 	doc.selection.contract (new UnitValue (4, "px"));
 	doc.selection.expand (new UnitValue (6, "px"));
@@ -311,13 +353,12 @@ function PP_PageBuild (caseInfo, cInfo)
 	bd[3] = doc.activeLayer.bounds[3] + 2;
 	doc.crop (bd);
 	
+
+
     var timestamp = (new Date()).valueOf(); 
 		
         
     var targetPath = GetWorkPath() + "zB_result_"+ timestamp + "_step1.tif";
-
-	//if (bWhiteLine)
-	//PP_PageBuildOnlyCMYK (doc, targetPath);
 
 
 	app.doAction ("getCurrentLayerSelection", "sys");
@@ -336,6 +377,20 @@ function PP_Work2(caseID)
 	PP_ProCaseInfo (info);
 	var c = PP_GetPosition ();
 	PP_PageBuild (info, c);
+}
+
+function PP_WorkModeInit ()
+{
+	if (CompareString(work_mode,"mini"))
+	{
+		xNum = 7;
+		yNum = 7;
+	}
+	if (CompareString(work_mode,"big"))
+	{
+		xNum = 5;
+		yNum = 6;
+	}	
 }
 
 function PP_Work()
@@ -357,6 +412,7 @@ function PP_Work()
 	}
 	//work_mode = "big";
 	
+	
 	PP_ProCaseInfo (info);
 	//var c = PP_GetPosition ();
 	var org = PP_GetOrgPosition ();
@@ -376,6 +432,7 @@ function PP_Work()
 
         }
     }
+	PP_WorkModeInit ();
 	PP_Work2 ("picture");
 }
 

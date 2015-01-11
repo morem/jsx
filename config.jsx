@@ -42,6 +42,11 @@ function GetUserName()
 
 }
 
+function GetWorkMode ()
+{
+    return File.decode(GetParams("WORK_MODE","C:/photoshop.cfg"));
+}
+
 function GetCfgBasePath ()
 {
     //var a =  File.decode(GetParams("CFG_BASE_PATH","C:/photoshop.cfg"));
