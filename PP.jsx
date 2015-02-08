@@ -28,18 +28,18 @@ function PP_GetPlanPath ()
 function PP_GetPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./position_"+ work_mode +".csv";
+    return PM_GetConfigPath() + "./handtop_1/position_"+ work_mode +".csv";
 }
 function PP_GetOrgPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./org_"+ work_mode +  ".csv";
+    return PM_GetConfigPath() + "./handtop_1/org_"+ work_mode +  ".csv";
 }
 
 function PP_GetPageTempatePath ()
 {
 
-    return PM_GetConfigPath() + "./page_" +work_mode+ ".tif";
+    return PM_GetConfigPath() + "./handtop_1/page_" +work_mode+ ".tif";
 }
 
 
@@ -399,14 +399,12 @@ function PP_Work()
 	for (var caseID in info)
 	{
 		var modul = PM_GetModulFromCaseID (caseID);
-		if (CompareString(modul,"i5s") ||
-			CompareString(modul,"i5c") ||
-			CompareString(modul,"i4s"))
+		if (CompareString(modul,"i6p"))
 		{
-		    work_mode = "mini";
+		    work_mode = "big";
 		}
 		else{
-		    work_mode = "big";
+		    work_mode = "mini";
 		}
 		break;
 	}
