@@ -35,4 +35,44 @@ function PATH_GetPathInDirectory (dir, mask)
 	return array;	
 }
 
+function PATH_GetTempDirectory ()
+{
+	return PATH_GetWorkPath () + "./tmp/";
+}
+
+var g_path_configPath = null;
+function PATH_GetConfigPath ()
+{
+	if (g_path_configPath != null) return g_path_configPath;
+	g_path_configPath = File.decode(GetParam("CONFIG_DIRECTORY"));
+    return g_path_configPath;
+}
+
+function PATH_GetPositionPath ()
+{
+
+    return PATH_GetConfigPath() + "./position_"+ work_mode +".csv";
+}
+
+
+function PATH_GetPlanPath ()
+{
+
+    return GetWorkPath() + "生产计划.csv";
+}
+
+function PATH_GetOrgPositionPath ()
+{
+
+    return PATH_GetConfigPath() + "./org"+ ".csv";
+}
+
+
+function PATH_GetPageTempatePath ()
+{
+
+    return PATH_GetConfigPath() + "./page_" +work_mode+ ".tif";
+}
+
+
 
