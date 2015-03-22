@@ -173,12 +173,33 @@ function PicLib_Work (sortType)
         objectArray [py].id = id;
         objectArray [py].name = name;
         objectArray [py].path = path + "/s.jpg";
+        objectArray [py].path2 = "C:\\tmp\\" + name + " " + py + ".jpg";        
 
 		//if (index == 10)break;
     }
 
 	if (CompareString(sortType,"pingyin"))
 		nameArray.sort (function(a, b) {return a.localeCompare(b) });
+
+    
+    for (var f in nameArray)
+    {
+        var k = nameArray[f];
+		try 
+	   	{
+		    var file = new File (objectArray[k].path);
+			file.copy (objectArray[k].path2)
+
+	   	}
+    	catch (err)
+	   	{
+//	   		alert (err);
+    	}
+	}
+	
+
+    //var file = new File (src);
+	//file.copy (targetPath)
 
     for (var f in nameArray)
     {
@@ -189,6 +210,7 @@ function PicLib_Work (sortType)
 	   	}
     	catch (err)
 	   	{
+//	   		alert (err);
     	}
 	}
 	
@@ -197,6 +219,7 @@ function PicLib_Work (sortType)
     Jigsaw_Init (PicLib_GetPicLabPath() + "./../summary/" + sortType + "/",12,4, a[0], a[1]);
     Jigsaw_Build (imageArray);
     Jigsaw_End ();
+    
     
 }
 
