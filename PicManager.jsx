@@ -34,13 +34,13 @@ function PM_UnInit ()
 function PM_GetPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./position_"+ work_mode +".csv";
+    return PM_GetConfigPath() + "./handtop_1/position_"+ work_mode +".csv";
 }
 
 function PM_GetOrgPositionPath ()
 {
 
-    return PM_GetConfigPath() + "./org_"+ work_mode + ".csv";
+    return PM_GetConfigPath() + "./handtop_1/org_"+ work_mode + ".csv";
 }
 
 
