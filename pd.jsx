@@ -9,6 +9,7 @@
 #include "csv.jsx"
 #include "path.jsx"
 #include "picLib.jsx"
+#include "filter.jsx"
 
 var g_pdTimeTag = (new Date()).valueOf();
 
@@ -241,11 +242,12 @@ function PD_GetName (element)
 		if (null != element["商品属性"].match (g_pd_picName[x]))
         {
                element["name"] = g_pd_picName[x];
-               return;
+               return element["name"];
         }
 	}
 
     element["name"]  =  element["商品属性"];
+	return element["name"];
 
 }
 
@@ -307,10 +309,11 @@ function PD_ParseArray (element)
 {
     PD_CheckHardOrSoft (element);
     PD_CheckModul (element);
-	PD_GetName (element);
-	PD_GetCaseID (element);
-	PD_AddToPlanArray (element);
-	return element;    
+    var name = PD_GetName (element);
+    var caseID = PD_GetCaseID (element);
+    if (!Filter_Check (caseID, name))return null;
+    PD_AddToPlanArray (element);
+    return element;    
 }
 
 function PD_Build_Init ()
@@ -430,8 +433,10 @@ function PD_Work ()
 		{
 			PD_ParseArray (array[orderID][goodIndex]);
 		}
-		PD_AddDependData (orderID);
-
+		if (Filter_Check())
+		{
+			PD_AddDependData (orderID);
+		}
 	}
     var dep = g_PD_dependData;
     var t = allInfo;
