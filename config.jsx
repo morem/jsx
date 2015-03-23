@@ -52,6 +52,12 @@ function GetMachineNumber()
     return File.decode(GetParams("MACHINE_NO","C:/photoshop.cfg"));
 }
 
+
+function GetSaveType ()
+{
+    return File.decode(GetParams("SAVE_TYPE","C:/photoshop.cfg"));
+}
+
 function GetCfgBasePath ()
 {
     //var a =  File.decode(GetParams("CFG_BASE_PATH","C:/photoshop.cfg"));

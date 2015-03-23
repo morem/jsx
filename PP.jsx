@@ -168,16 +168,13 @@ function PP_PageBuild (caseInfo, cInfo)
     var timestamp = (new Date()).valueOf(); 
 		
         
-    var targetPath = GetWorkPath() + "zB_result_"+ timestamp + "_step1.tif";
-
-
 	app.doAction ("getCurrentLayerSelection", "sys");
 	app.doAction ("buildSpotCh", "sys");
 
+	var saveType = GetSaveType ();
+    var targetFile = new File (GetWorkPath() + "zB_result_"+ timestamp + "." + saveType);
 
-
-    var targetFile = new File (GetWorkPath() + "zB_result_"+ timestamp + ".tif");
-    doc.saveAs(targetFile, GetTIFFParam(), true);
+    doc.saveAs(targetFile, GetSaveParam(saveType), true);
 	CloseDoc (doc);
 }
 
