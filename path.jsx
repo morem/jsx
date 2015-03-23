@@ -1,4 +1,4 @@
-﻿
+#include "init.jsx"
 
 function PATH_GetDepDirectory ()
 {
@@ -51,7 +51,7 @@ function PATH_GetConfigPath ()
 function PATH_GetPositionPath ()
 {
 
-    return PATH_GetConfigPath() + "./position_"+ work_mode +".csv";
+    return PATH_GetConfigPath() + "./" + machine_number + "/position_"+ work_mode +".csv";
 }
 
 
@@ -64,14 +64,14 @@ function PATH_GetPlanPath ()
 function PATH_GetOrgPositionPath ()
 {
 
-    return PATH_GetConfigPath() + "./org"+ ".csv";
+    return PATH_GetConfigPath() + "./" + machine_number + "/org_"+ work_mode + ".csv";
 }
 
 
 function PATH_GetPageTempatePath ()
 {
 
-    return PATH_GetConfigPath() + "./page_" +work_mode+ ".tif";
+    return PATH_GetConfigPath() + "./" + machine_number +  "/page_" +work_mode+ ".tif";
 }
 
 

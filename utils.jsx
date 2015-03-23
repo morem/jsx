@@ -23,9 +23,9 @@ function ErrorOut (err)
 
 function CloseDoc (doc)
 {
-    var fdummy = new File (DummyPath);
-    doc.saveAs (fdummy);
-    doc.close ();
+    //var fdummy = new File (DummyPath);
+    //doc.saveAs (fdummy);
+    doc.close (SaveOptions.DONOTSAVECHANGES);
 }
 
 function Utils_GetMin (a,b)

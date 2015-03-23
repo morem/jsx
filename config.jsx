@@ -47,6 +47,11 @@ function GetWorkMode ()
     return File.decode(GetParams("WORK_MODE","C:/photoshop.cfg"));
 }
 
+function GetMachineNumber()
+{
+    return File.decode(GetParams("MACHINE_NO","C:/photoshop.cfg"));
+}
+
 function GetCfgBasePath ()
 {
     //var a =  File.decode(GetParams("CFG_BASE_PATH","C:/photoshop.cfg"));
@@ -130,7 +135,6 @@ function GetTemplatePathAbsolute (path)
     else{
         return GetTemplateBase() + path;
     }
-
 }
 
 var g_modulArray = null;
