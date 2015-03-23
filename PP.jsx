@@ -10,7 +10,7 @@
 #include "csv.jsx"
 #include "pos.jsx"
 #include "PicManager.jsx"
-
+#include "pmode.jsx"
 
 function PP_GetCaseInfo ()
 {
@@ -58,7 +58,7 @@ function PP_ProCaseInfo (caseInfo)
 		for (var x in caseInfo[modul])
 		{
 			//caseInfo[modul][x].targetPath = GetWorkPath () + "./tmp/" + modul + "_" +caseInfo[modul][x]["图案编号"] +"_all"+ ".tif";
-			caseInfo[modul][x].targetPath = PM_GetTargetPath ( caseInfo[modul][x]["图案编号"], modul, "all");
+			caseInfo[modul][x].targetPath = PM_GetTargetPath ( caseInfo[modul][x]["图案编号"], modul, PP_GetPrintMode(caseInfo[modul][x]["工艺"]));
 			caseInfo[modul][x].targetPathFudiao = GetWorkPath () + "./tmp/" + modul + "_" + caseInfo[modul][x]["图案编号"] + "_" + "fudiao.tif";
 			if (caseInfo[modul][x]["数量"].length == 0)caseInfo[modul][x]["数量"] = "1";
 			caseInfo[modul][x].num = caseInfo[modul][x]["数量"];
@@ -153,8 +153,8 @@ function PP_PageBuild (caseInfo, cInfo)
 	{}
 
 	app.doAction ("getCurrentLayerSelection", "sys");
-	doc.selection.contract (new UnitValue (4, "px"));
-	doc.selection.expand (new UnitValue (6, "px"));
+	//doc.selection.contract (new UnitValue (4, "px"));
+	//doc.selection.expand (new UnitValue (6, "px"));
 	doc.selection.invert();
 	doc.selection.clear();
 
@@ -179,7 +179,13 @@ function PP_PageBuild (caseInfo, cInfo)
 }
 
 
-
+function PP_GetPrintMode (type)
+{
+	if (CompareString(type, "lk"))
+		return "main";
+	else
+		return "all";
+}
 
 
 function PP_Work2(caseID)
@@ -209,8 +215,8 @@ function PP_Work()
     for (var caseID in info)
     {
         for (var i = 0; i < info[caseID].length; i ++)
-        {           
-        	var ret = PM_WORK (caseID, info[caseID][i]["图案编号"], "all");
+        {
+        	var ret = PM_WORK (caseID, info[caseID][i]["图案编号"], PP_GetPrintMode (info[caseID][i]["工艺"]));
             if (ret == null)return false;
         }
     }
