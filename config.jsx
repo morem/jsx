@@ -260,6 +260,16 @@ function GetConfigXMLByPath (path)
     return content;
 }
 
+var pPerCM = 100;
+function CONFIG_MMToPix (mm)
+{
+	return mm*1.0*pPerCM / 10;
+}
+
+function CONFIG_GetPixPerMM ()
+{
+	return pPerCM;
+}
 
 
 function InitAll()
