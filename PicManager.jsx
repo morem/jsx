@@ -8,6 +8,7 @@
 #include "csv.jsx"
 #include "msg.jsx"
 #include "dep.jsx"
+#include "picLib.jsx"
 
 
 var g_caseInfo = null;
@@ -29,7 +30,7 @@ function PM_UnInit ()
 function PM_GetAllDepPath (caseID, picMask)
 {
 	var a = new Array ();
-	a.push (PM_NumOrNameToPath (caseID, picMask));
+	a.push (PicLib_NumOrNameToPath (caseID, picMask));
 	a.push (PM_GetShapePath (caseID));
 	return a;
 }
@@ -124,72 +125,6 @@ function PM_GetPicLabPath()
 
 }
 
-
-function PM_GetMostFitPicPath (caseID, dirName)
-{
-	var ret = null;
-	var path = null;
-	var p = 48;
-	path = dirName + "/" + PM_GetModulFromCaseID(caseID) + ".tif";
-	if (File_CheckFileExist(path))return path;
-	
-	var caseInfo = PM_GetCaseInfo (caseID);
-	var t = caseInfo["主体宽"]/caseInfo["主体长"]*100;
-	if (Utils_ABS (t-48) > Utils_ABS (t-52))
-	{
-		path = dirName + "/" + "10052.tif";
-		p = 52;
-	}
-	else
-		path = dirName + "/" + "10048.tif";
-	
-	if (File_CheckFileExist(path))return path;
-
-	if (p == 52) path = dirName + "/" +  "i4s.tif";
-	if (p == 48) path = dirName + "/" +  "i5s.tif";
-	if (File_CheckFileExist(path))return path;	
-	return null;
-
-}
-
-function PM_NumOrNameToPath (caseID, picID)
-{
-    var floder = new Folder (PATH_GetPicLabPath());
-    if (!floder.exists){
-    	MSG_OutPut("图库的路径不正确");
-        return null;
-    }
-	
-    var mask = "" + picID+" *";
-    var array = floder.getFiles (mask);
-    if (array.length != 0)
-    {
-        if (array.length != 1){
-            MSG_OutPut("重复的编号:" + picID);
-			return null;
-        };
-		var path = PM_GetMostFitPicPath (caseID, array[0].fsName );
-        return path;
-    }
-
-    mask = "* " + picID;
-    array = floder.getFiles (mask);
-    
-    if (array.length != 0)
-    {
-        if (array.length != 1){
-            MSG_OutPut("重复的图案名称:" + picID);
-			return null;
-        };
-		var path = PM_GetMostFitPicPath (caseID, array[0].fsName );
-        return path;
-    }
-
-	MSG_OutPut("在图库中没有找到对应的编号或名称:" + picID);
-	return null;
-}
-
-
 function PM_GetTargetPath (caseID, picID, layer)
 {
     return PM_TempDir() + "./" + caseID + "_"+ picID + "_" + layer + ".tif";
@@ -280,7 +215,7 @@ function PM_WORK(caseID, picMask, layer)
 	if (DEP_CheckFileNewThan (targetPath, depArray) == true)return targetPath;
 	
     PM_Init ();
-    var srcPath = PM_NumOrNameToPath (caseID, picMask);  
+    var srcPath = PicLib_NumOrNameToPath (caseID, picMask);  
 	if (srcPath == null)
 	{
 		MSG_OutPut("没有找到所需要的图案文件");

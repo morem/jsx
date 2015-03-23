@@ -14,6 +14,14 @@ function PATH_GetPicLabPath()
 }
 
 
+var g_path_picLabPath2 = null;
+function PATH_GetPicLabPath2 ()
+{
+	if (g_path_picLabPath2 != null) return g_path_picLabPath2;
+	g_path_picLabPath2 = File.decode(GetParam("PIC_LIB_2"));
+	return g_path_picLabPath2;
+}
+
 var g_path_workPath = null;
 function PATH_GetWorkPath (app)
 {
