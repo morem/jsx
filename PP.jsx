@@ -11,6 +11,7 @@
 #include "pos.jsx"
 #include "PicManager.jsx"
 
+
 function PP_GetCaseInfo ()
 {
     var s_init = new Object ();
@@ -130,8 +131,8 @@ function PP_PageBuild (caseInfo, cInfo)
                  posCur ++;
                  if (posCur == posSum)
                  {
-                 	CloseDoc (doc);
-                    return ;
+                 	//CloseDoc (doc);
+                    break ;
                  }
 			}
 		
@@ -194,13 +195,14 @@ function PP_Work2(caseID)
 
 function PP_Work()
 {
-	work_mode = "mini";
-    machine_number = "handtop_1_test";
+	//work_mode = "mini";
+    //machine_number = "handtop_1_test";
+    machine_number = GetMachineNumber ();
 
     var info = PP_GetCaseInfo ();
 	for (var caseID in info)
 	{
-		var modul = PM_GetModulFromCaseID (caseID);
+		work_mode = Pos_GetWorkMode (caseID);
 		break;
 	}
 	
@@ -213,8 +215,6 @@ function PP_Work()
         {           
         	var ret = PM_WORK (caseID, info[caseID][i]["Í¼°¸±àºÅ"], "all");
             if (ret == null)return false;
-            //info.targetPath = ret;
-
         }
     }
 	PP_Work2 ("picture");

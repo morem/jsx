@@ -74,5 +74,14 @@ function PATH_GetPageTempatePath ()
     return PATH_GetConfigPath() + "./" + machine_number +  "/page_" +work_mode+ ".tif";
 }
 
+function PATH_GetLogPath ()
+{
+	return PATH_GetWorkPath(app)+ "./log.txt";
+}
+
+function PATH_GetFixtureMapPath ()
+{
+    return PATH_GetConfigPath() + "./" + machine_number +  "/fixture_map.csv";
+}
 
 

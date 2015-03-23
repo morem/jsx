@@ -1,4 +1,6 @@
 ﻿#include "utils.jsx"
+#include "log.jsx"
+#include "init.jsx"
 #include "config.jsx"
 #include "image.jsx"
 #include "model.jsx"
@@ -226,17 +228,54 @@ function Pos_GetPosition ()
 }
 
 
-function POS_Get ()
+function Pos_GetModulMap ()
 {
-	var org = Pos_GetOrgPosition ();
+    var s_init = new Object ();
+
+    if (!File_CheckFileExist(PATH_GetFixtureMapPath())){
+		LOG_Add_Error ("Get Fixtrue Map Error, map file no exist path:" + PATH_GetFixtureMapPath());
+		return 0;
+    }
+    
+    s_init.path = PATH_GetFixtureMapPath();
+    s_init.data_header_index = 0;
+    s_init.data_start = 1;
+    s_init.key = "modul";
+    s_init.data_header = new Array ();
+
+    var e  = new Object();
+    e.text = "modul";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "suffix";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+    return  CSV_Parse_Direct (s_init);
+}
+
+function Pos_GetWorkMode (modul)
+{
+	if (work_mode != null) return work_mode;
+	var map = Pos_GetModulMap ();
+	if (map == null)
+		LOG_Add_Error ("Get Fixtrue Map Error");
+	return map[modul].suffix;
+}
+
+function POS_Get (modul)
+{	var org = Pos_GetOrgPosition ();
     var unit = Pos_GetPosition ();
 
     var i ;
 	for (i in unit){
-		unit[i].x = unit[i].x *1.0 - CONFIG_MMToPix((unit[i].x_offset + org[0].x_offset))*1.0;
-		unit[i].y = unit[i].y*1.0 + CONFIG_MMToPix((unit[i].y_offset + org[0].y_offset))*1.0;
+		unit[i].x = unit[i].x *1.0 - CONFIG_MMToPix((unit[i].x_offset*1.0 + org[0].x_offset*1.0))*1.0;
+		unit[i].y = unit[i].y*1.0 + CONFIG_MMToPix((unit[i].y_offset*1.0 + org[0].y_offset*1.0))*1.0;
+		LOG_Add_Info("Unit Position, x:" + unit[i].x + "\t y:" + unit[i].y);
     }
-	return unit;	
+	return unit;
 }
 
 /*

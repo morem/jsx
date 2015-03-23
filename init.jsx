@@ -1,2 +1,3 @@
-var work_mode = "mini";
-var machine_number = "handtop_1_test";
+
+var machine_number = null;
+var work_mode = null;
