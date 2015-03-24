@@ -125,7 +125,7 @@ function PicLib_NumOrNameToPathExt (caseID, picID, libPath)
     {
         if (array.length != 1){
             LOG_Add_Error("重复的编号:" + picID);
-			return null;
+			//return null;
         };
 		var path = PicLib_GetMostFitPicPath (caseID, array[0].fsName );
         return path;
@@ -138,7 +138,7 @@ function PicLib_NumOrNameToPathExt (caseID, picID, libPath)
     {
         if (array.length != 1){
             LOG_Add_Error("重复的图案名称:" + picID);
-			return null;
+			//return null;
         };
 		var path = PicLib_GetMostFitPicPath (caseID, array[0].fsName );
         return path;
