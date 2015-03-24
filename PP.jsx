@@ -165,14 +165,15 @@ function PP_PageBuild (caseInfo, cInfo)
 	bd[3] = doc.activeLayer.bounds[3] + 2;
 	doc.crop (bd);
 	
-    var timestamp = (new Date()).valueOf(); 
+    var t = new Date(); 
+	var timeString = t.getHours() + "-"+ t.getMinutes() + "-"+ t.getSeconds();
 		
         
 	app.doAction ("getCurrentLayerSelection", "sys");
 	app.doAction ("buildSpotCh", "sys");
 
 	var saveType = GetSaveType ();
-    var targetFile = new File (GetWorkPath() + "zB_result_"+ timestamp + "." + saveType);
+    var targetFile = new File (GetWorkPath() + "zB_result_"+ timeString + "." + saveType);
 
     doc.saveAs(targetFile, GetSaveParam(saveType), true);
 	CloseDoc (doc);
