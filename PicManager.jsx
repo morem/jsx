@@ -35,10 +35,7 @@ function PM_GetAllDepPath (caseID, picMask)
 	return a;
 }
 
-function PM_GetCaseInfoPath ()
-{
-    return PATH_GetConfigPath() + "caseInfo.csv";
-}
+
 
 function PM_GetCaseInfo (caseID)
 {
@@ -50,7 +47,7 @@ function PM_GetCaseInfo (caseID)
 	}
 	
     var s_init = new Object ();
-    s_init.path = PM_GetCaseInfoPath();
+    s_init.path = PATH_GetCaseInfoPath();
     s_init.data_header_index = 0;
     s_init.data_start = 1;
     s_init.key = "ËØ²Ä±àºÅ";

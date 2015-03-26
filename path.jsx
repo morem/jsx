@@ -92,4 +92,8 @@ function PATH_GetFixtureMapPath ()
     return PATH_GetConfigPath() + "./" + machine_number +  "/fixture_map.csv";
 }
 
+function PATH_GetCaseInfoPath ()
+{
+    return PATH_GetConfigPath() + "./" + machine_number +  "/caseInfo.csv";
+}
 
