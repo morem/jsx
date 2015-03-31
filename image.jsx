@@ -27,6 +27,25 @@ function GetTIFFParam()
     return param;        
 }
 
+function GetPDFParam()
+{
+	var param = new PDFSaveOptions();
+	param.downSample = PDFResample.NONE;
+	param.embedColorProfile = false;
+	param.encoding = PDFEncoding.PDFZIP;
+	param.layers = true;
+	param.optimizeForWeb = false;
+	return param;
+
+}
+
+function GetSaveParam (type)
+{
+	if (CompareString("tif",type))return GetTIFFParam();
+	if (CompareString("pdf",type))return GetPDFParam();
+}
+	
+
 function GetTargetPathInfo (imageInfo)
 {
     var path = new Object ();

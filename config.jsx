@@ -47,6 +47,17 @@ function GetWorkMode ()
     return File.decode(GetParams("WORK_MODE","C:/photoshop.cfg"));
 }
 
+function GetMachineNumber()
+{
+    return File.decode(GetParams("MACHINE_NO","C:/photoshop.cfg"));
+}
+
+
+function GetSaveType ()
+{
+    return File.decode(GetParams("SAVE_TYPE","C:/photoshop.cfg"));
+}
+
 function GetCfgBasePath ()
 {
     //var a =  File.decode(GetParams("CFG_BASE_PATH","C:/photoshop.cfg"));
@@ -130,7 +141,6 @@ function GetTemplatePathAbsolute (path)
     else{
         return GetTemplateBase() + path;
     }
-
 }
 
 var g_modulArray = null;
@@ -260,6 +270,16 @@ function GetConfigXMLByPath (path)
     return content;
 }
 
+var pPerCM = 100;
+function CONFIG_MMToPix (mm)
+{
+	return mm*1.0*pPerCM / 10;
+}
+
+function CONFIG_GetPixPerMM ()
+{
+	return pPerCM;
+}
 
 
 function InitAll()

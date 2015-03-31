@@ -7,7 +7,6 @@
 #include "file.jsx"
 #include "doc.jsx"
 #include "csv.jsx"
-#include "PicManager.jsx"
 
 
 var dir = "";

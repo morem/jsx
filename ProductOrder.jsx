@@ -8,6 +8,7 @@
 #include "doc.jsx"
 #include "csv.jsx"
 #include "pm.jsx"
+#include "PicLib.jsx"
 
 function POrder_GetOrderPath ()
 {
@@ -60,7 +61,7 @@ function POrder_GetCaseInfoExt ()
     {
         for (var i = 0 ; i < a[caseID].length ; i ++){
             var t = a[caseID][i];
-            t.path = PM_NumOrNameToPath (caseID, t["图案编号"]);
+            t.path = PicLib_NumOrNameToPath (caseID, t["图案编号"]);
             t["数量"]  =  t["数量"] *1;
             if (t["数量"] == 0)t.num = 1;
             else t.num = t["数量"]; 

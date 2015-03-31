@@ -4,10 +4,9 @@
 #include "model.jsx"
 #include "layer.jsx"
 #include "file.jsx"
-#include "file.jsx"
 #include "doc.jsx"
+
 #include "csv.jsx"
-#include "PicManager.jsx"
 #include "jigsaw.jsx"
 #include "pinyin.jsx"
 
@@ -30,14 +29,21 @@ var g_picLib_pathArray = null;
 function PicLib_GetAllPic ()
 {
 	if (null != g_picLib_pathArray)return g_picLib_pathArray;
-    var floder = new Folder (PicLib_GetPicLabPath());
+    var floder = new Folder (PATH_GetPicLabPath());
     if (!floder.exists){
-        output("图库的路径不正确");
-        return -1;
+        LOG_Add_Error("Picture lib path 0 not exist");
     }
+
+    var floder1 = new Folder (PATH_GetPicLabPath2());
+    if (!floder1.exists){
+        LOG_Add_Error("Picture lib path 1 not exist");
+    }
+
     var mask = "* *";
     var array = floder.getFiles (mask);
-    g_picLib_pathArray = array;
+    var array1 = floder1.getFiles (mask);
+	
+    g_picLib_pathArray = array.concat (array1);
     return g_picLib_pathArray ;
 }
 
@@ -78,10 +84,93 @@ function PicLib_GetFileModifiedTimeGMTMs (path)
 	return Date.parse (file.modified);
 }
 
+function PicLib_GetMostFitPicPath (caseID, dirName)
+{
+	var ret = null;
+	var path = null;
+	var p = 48;
+	path = dirName + "/" + PM_GetModulFromCaseID(caseID) + ".tif";
+	if (File_CheckFileExist(path))return path;
+	
+	var caseInfo = PM_GetCaseInfo (caseID);
+	var t = caseInfo["主体宽"]/caseInfo["主体长"]*100;
+	if (Utils_ABS (t-48) > Utils_ABS (t-52))
+	{
+		path = dirName + "/" + "10052.tif";
+		p = 52;
+	}
+	else
+		path = dirName + "/" + "10048.tif";
+	
+	if (File_CheckFileExist(path))return path;
+
+	if (p == 52) path = dirName + "/" +  "i4s.tif";
+	if (p == 48) path = dirName + "/" +  "i5s.tif";
+	if (File_CheckFileExist(path))return path;	
+	return null;
+
+}
+
+function PicLib_NumOrNameToPathExt (caseID, picID, libPath)
+{
+    var floder = new Folder (libPath);
+    if (!floder.exists){
+    	MSG_OutPut("图库的路径不正确");
+        return null;
+    }
+	
+    var mask = "" + picID+" *";
+    var array = floder.getFiles (mask);
+    if (array.length != 0)
+    {
+        if (array.length != 1){
+            LOG_Add_Error("重复的编号:" + picID);
+			//return null;
+        };
+		var path = PicLib_GetMostFitPicPath (caseID, array[0].fsName );
+        return path;
+    }
+
+    mask = "* " + picID;
+    array = floder.getFiles (mask);
+    
+    if (array.length != 0)
+    {
+        if (array.length != 1){
+            LOG_Add_Error("重复的图案名称:" + picID);
+			//return null;
+        };
+		var path = PicLib_GetMostFitPicPath (caseID, array[0].fsName );
+        return path;
+    }
+
+	LOG_Add_Info("在图库中没有找到对应的编号或名称:" + picID);
+	return null;
+}
+
+
+function PicLib_NumOrNameToPath (caseID, picID)
+{
+	var libPath1 = PATH_GetPicLabPath();
+	var libPath2 = PATH_GetPicLabPath2();
+	
+    var path = PicLib_NumOrNameToPathExt (caseID, picID, libPath1);
+	if (null == path)
+    {
+        LOG_Add_Info ("Error when search picture in lib0");
+         path = PicLib_NumOrNameToPathExt (caseID, picID, libPath2);
+		if (null == path)
+			LOG_Add_Error("Error when search picture in lib1");
+    }
+	return path;
+}
+
+
+
 function PicLib_BuildElement (path, id , name)
 {
     var dir = Utils_GetDirectoryPathFromPath (path);
-    var srcPath = PM_GetMostFitPicPath("i5s_gt", dir);
+    var srcPath = PicLib_GetMostFitPicPath("i5s_gt", dir);
 
     var tTime = PicLib_GetFileModifiedTimeGMTMs (path) ;
     var srcTime = PicLib_GetFileModifiedTimeGMTMs (srcPath);
@@ -173,12 +262,33 @@ function PicLib_Work (sortType)
         objectArray [py].id = id;
         objectArray [py].name = name;
         objectArray [py].path = path + "/s.jpg";
+        objectArray [py].path2 = "C:\\tmp\\" + name + " " + py + ".jpg";        
 
 		//if (index == 10)break;
     }
 
 	if (CompareString(sortType,"pingyin"))
 		nameArray.sort (function(a, b) {return a.localeCompare(b) });
+
+    
+    for (var f in nameArray)
+    {
+        var k = nameArray[f];
+		try 
+	   	{
+		    var file = new File (objectArray[k].path);
+			file.copy (objectArray[k].path2)
+
+	   	}
+    	catch (err)
+	   	{
+//	   		alert (err);
+    	}
+	}
+	
+
+    //var file = new File (src);
+	//file.copy (targetPath)
 
     for (var f in nameArray)
     {
@@ -189,6 +299,7 @@ function PicLib_Work (sortType)
 	   	}
     	catch (err)
 	   	{
+//	   		alert (err);
     	}
 	}
 	
@@ -197,6 +308,7 @@ function PicLib_Work (sortType)
     Jigsaw_Init (PicLib_GetPicLabPath() + "./../summary/" + sortType + "/",12,4, a[0], a[1]);
     Jigsaw_Build (imageArray);
     Jigsaw_End ();
+    
     
 }
 
