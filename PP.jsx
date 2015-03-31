@@ -121,24 +121,17 @@ function PP_PageBuild (caseInfo, cInfo)
                 doc.artLayers[layerName].translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
                 
 				doc.artLayers["background"].visible = false;
-				try{
-					doc.mergeVisibleLayers ();
-					doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
-				}
-				catch(err)
-				{
-				}
-                 posCur ++;
-                 if (posCur == posSum)
-                 {
-                 	//CloseDoc (doc);
-                    break ;
-                 }
+                posCur ++;
+	             if (posCur == posSum)
+	             {
+	                break ;
+	             }
 			}
 		
 		}
 	}
 	try{
+		SetDocAllLayerVaild (doc);
 		doc.mergeVisibleLayers ();
 		doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
 	}

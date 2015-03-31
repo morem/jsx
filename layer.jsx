@@ -80,6 +80,13 @@ function Layer_SetVisible (doc, name, visible)
 }
 
 
+function SetDocAllLayerVaild (doc)
+{
+    var i;
+    for (i = 0;i < doc.artLayers.length; i ++)
+        doc.artLayers[i].visible = true;
+}
+
 function SetDocLayerVaild (doc, arrayName)
 {   
     var i = 0;
@@ -98,11 +105,9 @@ function SetDocLayerVaild (doc, arrayName)
     }
 
     if (i == 0)
-        for (x in doc.artLayers)
-            doc.artLayers[x].visible = true;
+       SetDocAllLayerVaild (doc);          
 
 }
-
 
 function Layer_NewLayerAndDot (doc)
 {
