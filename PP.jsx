@@ -207,6 +207,13 @@ function PP_Work()
 	for (var caseID in info)
 	{
 		work_mode = Pos_GetWorkMode (caseID);
+		if (work_mode == null)
+		{
+			var err = "Get Work Mode Error";
+			LOG_Add_Error(err)
+			MSG_OutPut(err)
+			return ;
+		}
 		break;
 	}
 	

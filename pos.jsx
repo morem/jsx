@@ -261,7 +261,17 @@ function Pos_GetWorkMode (modul)
 	if (work_mode != null) return work_mode;
 	var map = Pos_GetModulMap ();
 	if (map == null)
+	{
 		LOG_Add_Error ("Get Fixtrue Map Error");
+		return null;
+	}
+
+	if (typeof(map[modul]) == 'undefined')
+	{
+		LOG_Add_Error("Not Found " + modul + " in Fixture Map");
+		return null;
+	}
+	
 	return map[modul].suffix;
 }
 
