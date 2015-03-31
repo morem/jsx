@@ -76,6 +76,9 @@ function PP_PageBuild (caseInfo, cInfo)
 	var doc = app.open(templateFile);
     var posSum = cInfo.length;
 	var posCur = 0;	
+
+	doc.artLayers["background"].visible = false;
+
     for (var caseID in caseInfo)
    	{
 		for (var i = 0 ; i < caseInfo[caseID].length; i ++)
@@ -119,19 +122,20 @@ function PP_PageBuild (caseInfo, cInfo)
 				}
                 
                 doc.artLayers[layerName].translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
-                
-				doc.artLayers["background"].visible = false;
-                posCur ++;
-	             if (posCur == posSum)
-	             {
-	                break ;
-	             }
+                    
+				doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
+                 posCur ++;
+                 if (posCur == posSum)
+                 {
+                    break ;
+                 }
 			}
 		
 		}
 	}
+    
+	doc.artLayers["background"].visible = true;
 	try{
-		SetDocAllLayerVaild (doc);
 		doc.mergeVisibleLayers ();
 		doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
 	}
@@ -139,15 +143,10 @@ function PP_PageBuild (caseInfo, cInfo)
 	{
 	}
 
-    try{
-		doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
-   	}
-	catch(err)
-	{}
-
 	app.doAction ("getCurrentLayerSelection", "sys");
 	//doc.selection.contract (new UnitValue (4, "px"));
 	//doc.selection.expand (new UnitValue (6, "px"));
+
 	doc.selection.invert();
 	doc.selection.clear();
 
