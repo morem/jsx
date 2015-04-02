@@ -1,5 +1,4 @@
-#include "utils.jsx"
-#include "file.jsx"
+﻿#include "utils.jsx"
 #include "path.jsx"
 
 
@@ -9,14 +8,15 @@ function LOG_Init ()
 {
 	var logPath = PATH_GetLogPath ();
 	var file = new File (logPath);
-	file.open ('a');
 	logFile = file;
 }
 
 function LOG_Add (level, log)
 {
 	if (null == logFile)LOG_Init ();
-	logFile.writeln (log);	
+   	logFile.open ('a');
+	logFile.writeln (log);
+    logFile.close ();
 }
 function LOG_Add_Error (log)
 {

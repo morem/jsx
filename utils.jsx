@@ -94,6 +94,7 @@ var g_Index = 0;
 
 function Utils_GetTempNum ()
 {
+	if (g_Index > 400)g_Index = 0;
     return g_Index ++;
 
 }

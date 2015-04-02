@@ -30,6 +30,13 @@ function PATH_GetWorkPath (app)
     return g_path_workPath;
 }
 
+var g_picLibIndexPath = null;
+function PATH_GetPicLibIndexPath()
+{
+	if (g_picLibIndexPath != null) return g_picLibIndexPath;
+	g_picLibIndexPath = File.decode(GetParams("PICLIB_INDEX_PATH","C:/photoshop.cfg"));
+    return g_picLibIndexPath;
+}
 
 function PATH_GetPathInDirectory (dir, mask)
 {

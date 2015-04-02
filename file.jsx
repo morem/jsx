@@ -1,6 +1,7 @@
 ﻿
 #include "path.jsx"
 #include "utils.jsx"
+#include "log.jsx"
 
 function File_SaveAs (doc, targetPath, length)
 {
@@ -100,8 +101,23 @@ function File_GetTemp (src)
 	var fileExt  = Utils_GetFileExtFromPath (src);
 	var targetPath = tmpDir + fileName + "_" + Utils_GetTempNum () + "." + fileExt;
 
-	var file = new File (src);
-	file.copy (targetPath);	
-	return targetPath;
+	var i = 2;
+	while (i --)
+    {
+		var file = new File (src);
+        
+		if (false == file.exists)
+        {
+	        LOG_Add_Error(file.error + "   fileName:" + src);
+			return null;
+	    }
+	    if (false == file.copy (targetPath))
+        {
+	        LOG_Add_Error(file.error + "   fileName:" + src);
+	        continue;
+	    }
+	    return targetPath;
+    }
+	return null;    
 }
 
