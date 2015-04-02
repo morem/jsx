@@ -10,7 +10,6 @@
 #include "jigsaw.jsx"
 #include "pinyin.jsx"
 #include "log.jsx"
-#include "caseInfo.jsx"
 
 var imageArray = new Array ();
 
@@ -171,5 +170,4 @@ function PicLib_NumOrNameToPath (caseID, picID)
     }
 	return path;
 }
-
 
