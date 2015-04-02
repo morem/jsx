@@ -132,8 +132,14 @@ function PM_GetCasePic (srcPath,picMask, caseID, layer)
 {
 	var pathTemp;
 	/*step1: create a doc only contain the layers that defined by param layer*/
-    srcPath = File_GetTemp (srcPath)
-    var srcFile = new File (srcPath);
+    var srcPathTemp = File_GetTemp (srcPath);
+    if (null == srcPathTemp){
+        LOG_Add_Error("GetTemp File error src:" + srcPath);
+        return null;
+    }
+
+    
+    var srcFile = new File (srcPathTemp);
     var doc = app.open (srcFile);
     if (!CompareString("all",layer))
    	{
@@ -155,7 +161,13 @@ function PM_GetCasePic (srcPath,picMask, caseID, layer)
 
 	/*step2: create a new file fit the phone case template*/
     var templatePath = PM_GetShapePath (caseID);
-    var file = new File (File_GetTemp (templatePath));
+	var templatePathTemp = File_GetTemp (templatePath);
+    if (null == templatePathTemp){
+        LOG_Add_Error("GetTemp File error src:" + templatePath);
+        return null;
+    }
+    
+    var file = new File (templatePathTemp);
     var docTemplate = app.open (file);
     
     duplicateFromNew (docTemplate, srcPath,"main");
