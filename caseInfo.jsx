@@ -23,35 +23,42 @@ function CaseInfo_GetCaseInfo (caseID)
     var e  = new Object();
     e.text = "型号";
     e.format = 's';
+    e.textMap = "modul";
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "素材编号";
+    e.textMap = "id";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "度数";
+    e.textMap = "degree";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "主体长";
+    e.textMap = "height";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "主体宽";
+    e.textMap = "width";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "左右留边";
+    e.textMap = "intervalOfLeft";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "上下留边";
+    e.textMap = "intervalOfBottom";
     e.format = 's';
     s_init.data_header.push (e);
 

@@ -18,21 +18,26 @@ function PPlan_GetCaseInfo ()
 
     var e  = new Object();
     e.text = "素材编号";
+    e.textMap = "case_id"
+    
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "图案编号";
+    e.textMap = "pic_id";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "数量";
+    e.textMap = "num";
     e.format = 's';
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "工艺";
+    e.textMap = "tec";
     e.format = 's';
     s_init.data_header.push (e);
 

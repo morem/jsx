@@ -218,6 +218,8 @@ function CSV_Parse(s_init)
                 var t = new Object();
                 t = s_init.data_header[j];
                 contents[t.text] = data[t.index];
+                if (typeof(t.textMap) != "undefined")
+                	contents[t.textMap] = data[t.index];
             }
             dataStruct [key].push (contents);
         }
@@ -231,6 +233,8 @@ function CSV_Parse(s_init)
                 var t = new Object();
                 t = s_init.data_header[j];
                 contents[t.text] = data[t.index];
+                if (typeof(t.textMap) != "undefined")
+                	contents[t.textMap] = data[t.index];
             }   
             dataStruct [key] = contents;
         }
@@ -272,6 +276,8 @@ function CSV_Parse_Direct(s_init)
             var t = new Object();
             t = s_init.data_header[j];
             contents[t.text] = data[t.index];
+            if (typeof(t.textMap)  != "undefined")
+            	contents[t.textMap] = data[t.index];
         }
         dataStruct [key] = contents;
     }
