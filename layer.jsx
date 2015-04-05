@@ -79,6 +79,25 @@ function Layer_SetVisible (doc, name, visible)
 		doc.artLayers[name].visible = visible;
 }
 
+function Layer_SetVisibleOneOf (doc, layers)
+{
+	var i = 0;
+	for ( i in layers)
+    {
+		if (CheckLayerExist (doc, layers[i]))
+        {
+			doc.artLayers[layers[i]].visible = true;
+        }
+    }
+
+}
+
+function Layer_SetAllLayerUnVisible (doc)
+{
+    for (var j = 0; j < doc.artLayers.length; j ++)
+            doc.artLayers[j].visible = false;
+}
+
 
 function SetDocAllLayerVaild (doc)
 {
@@ -209,6 +228,24 @@ function duplicateFromNew (selfDoc, srcPath, layerName)
         var srcFile = new File (srcPath);
         var srcDoc = app.open (srcFile, srcType, true);  
         srcDoc.activeLayer.duplicate(selfDoc, ElementPlacement.PLACEATBEGINNING);
+        CloseDoc (srcDoc)
+        selfDoc.activeLayer.name = layerName;
+        return true;
+    }catch (err)
+    {
+        ErrorOut("Error Code" + err +"\n" +
+               "srcPath:" + srcPath + "\n");
+        return false;        
+    }
+}
+
+function duplicateFromNew_Ext (selfDoc, refLayer, placeMent ,srcPath, layerName)
+{
+    try{
+        var srcType = Utils_GetFileTypeByPath (srcPath);
+        var srcFile = new File (srcPath);
+        var srcDoc = app.open (srcFile, srcType, true);  
+        srcDoc.activeLayer.duplicate(refLayer, placeMent);
         CloseDoc (srcDoc)
         selfDoc.activeLayer.name = layerName;
         return true;

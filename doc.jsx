@@ -9,3 +9,8 @@ function Doc_GetDocHeight (doc)
 {
     return doc.height.as("px");
 }
+
+function Doc_Resize (doc, width, height, resolution)
+{
+	doc.resizeImage (width,height, resolution);
+}

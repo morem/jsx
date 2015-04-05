@@ -10,6 +10,7 @@
 #include "jigsaw.jsx"
 #include "pinyin.jsx"
 #include "log.jsx"
+#include "caseInfo.jsx"
 
 var imageArray = new Array ();
 
@@ -171,3 +172,17 @@ function PicLib_NumOrNameToPath (caseID, picID)
 	return path;
 }
 
+function PicLib_GetModulFromCaseID(caseID)
+{
+    return caseID.slice(0, caseID.indexOf("_") )
+}
+
+function PicLib_GetShapePath (caseID)
+{
+	var p = PATH_GetConfigPath () + "dt/"+ caseID + ".tif";
+
+	if (File_CheckFileExist(p))
+		return p;
+    else
+		return PATH_GetConfigPath () + "dt/"+ PicLib_GetModulFromCaseID(caseID) + ".tif"
+}

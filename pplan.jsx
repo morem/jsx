@@ -25,7 +25,7 @@ function PPlan_GetCaseInfo ()
 
     var e  = new Object();
     e.text = "Í¼°¸±àºÅ";
-    e.textMap = "pic_id";
+    e.textMap = "pic_no";
     e.format = 's';
     s_init.data_header.push (e);
 
