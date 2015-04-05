@@ -77,8 +77,6 @@ function PP_PageBuild (caseInfo, cInfo)
     var posSum = cInfo.length;
 	var posCur = 0;	
 
-	doc.artLayers["background"].visible = false;
-
     for (var caseID in caseInfo)
    	{
 		for (var i = 0 ; i < caseInfo[caseID].length; i ++)
@@ -134,10 +132,10 @@ function PP_PageBuild (caseInfo, cInfo)
 		}
 	}
     
-	doc.artLayers["background"].visible = true;
 	try{
-		doc.mergeVisibleLayers ();
+		
 		doc.activeLayer.rasterize (RasterizeType.ENTIRELAYER);
+        doc.mergeVisibleLayers ();
 	}
 	catch(err)
 	{
@@ -163,7 +161,7 @@ function PP_PageBuild (caseInfo, cInfo)
         
 	app.doAction ("getCurrentLayerSelection", "sys");
 	app.doAction ("buildSpotCh", "sys");
-
+	doc.flatten ();
 	var saveType = GetSaveType ();
     var targetFile = new File (GetWorkPath() + "zB_result_"+ timeString + "." + saveType);
 

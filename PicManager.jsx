@@ -227,7 +227,7 @@ function PM_WORK(caseID, picMask, layer)
     var srcPath = PicLib_NumOrNameToPath (caseID, picMask);  
 	if (srcPath == null)
 	{
-		MSG_OutPut("没有找到所需要的图案文件");
+		MSG_OutPut("没有找到所需要的图案文件 " + picMask);
 		return null;
 	}
 
