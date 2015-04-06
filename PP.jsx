@@ -118,6 +118,8 @@ function PP_PageBuild (caseInfo, cInfo)
 					xOffset = xCal - CONFIG_MMToPix(modulInfo["…œœ¬¡Ù±ﬂ"]*1.0) - layerMain.bounds[2].as("px");
 					yOffset = yCal + CONFIG_MMToPix(modulInfo["◊Û”“¡Ù±ﬂ"]*1.0) - layerMain.bounds[1].as("px");
 				}
+
+				LOG_Add_Info ("xOffset:" + xOffset + " yOffset:" + yOffset);
                 
                 doc.artLayers[layerName].translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
                     
