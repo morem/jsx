@@ -104,3 +104,8 @@ function PATH_GetCaseInfoPath ()
     return PATH_GetConfigPath() + "./" + machine_number +  "/caseInfo.csv";
 }
 
+
+function PATH_GetBoardDir ()
+{
+    return PATH_GetConfigPath() + "./" + "board/";
+}
