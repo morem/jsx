@@ -276,7 +276,7 @@ function CONFIG_MMToPix (mm)
 	return mm*1.0*pPerCM / 10;
 }
 
-function CONFIG_GetPixPerMM ()
+function CONFIG_GetPixPerCM ()
 {
 	return pPerCM;
 }
