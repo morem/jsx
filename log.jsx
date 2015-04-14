@@ -22,6 +22,26 @@ function LOG_Add_Error (log)
 {
 	LOG_Add ("Error", log);
 }
+
+function LOG_Error (log)
+{
+	LOG_Add ("Error", log);
+	//alert (log, "error", true);
+}
+
+
+function LOG_ErrMsgOut (log)
+{
+	LOG_Add ("Error", log);
+	alert (log, "error", true);
+}
+
+function LOG_ALERT (stringID, log)
+{
+	//LOG_Add ("Error", log);
+	//alert (log, "error", true);
+}
+
 function LOG_Add_Info (log)
 {
 	LOG_Add ("Info", log);
