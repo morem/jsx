@@ -94,17 +94,35 @@ function PP_PageBuild (caseInfo, cInfo)
                 
 				var picWidth = modulInfo["主体宽"]*1.0 - modulInfo["左右留边"]*2.0;
 				var picLength = modulInfo["主体长"]*1.0 - modulInfo["上下留边"]*2.0;
+                
+   				LOG_Add_Info ("bodyWidth:" + modulInfo["主体宽"] + " bodyLength:" + modulInfo["主体长"]);
+   				LOG_Add_Info ("picWidth:" + picWidth + " picLength:" + picLength);
+
 				var targetWidth = CONFIG_MMToPix(picWidth)*1.0;
 				var targetHeight = CONFIG_MMToPix(picLength)*1.0;
 
                 var orgWidth = GetLayerWidth (layerMain);
                 var orgHeight = GetLayerHeight (layerMain);
+   				LOG_Add_Info ("orgWidth:" + orgWidth + " orgHeight:" + orgHeight);
+
+				LOG_Add_Info (" Bounds[0]:" + layerMain.bounds[0].as("px") +
+                    		  " Bounds[1]:" + layerMain.bounds[1].as("px") +
+                    		  " Bounds[2]:" + layerMain.bounds[2].as("px") +
+                    		  " Bounds[3]:" + layerMain.bounds[3].as("px") );	
+
+
 
 				layerMain.resize((targetWidth*100.0)/(orgWidth*1.0), 
 				                 (targetHeight*100.0)/ (orgHeight*1.0), 
-				                 AnchorPosition.TOPLEFT);
+				                 AnchorPosition.TOPRIGHT);
                 
-                layerMain.rotate (modulInfo["度数"]);
+                layerMain.rotate (modulInfo["度数"],AnchorPosition.TOPRIGHT);
+                
+				LOG_Add_Info ("xCal:" + xCal + " yCal:" + yCal);
+				LOG_Add_Info (" Bounds[0]:" + layerMain.bounds[0].as("px") +
+                    		  " Bounds[1]:" + layerMain.bounds[1].as("px") +
+                    		  " Bounds[2]:" + layerMain.bounds[2].as("px") +
+                    		  " Bounds[3]:" + layerMain.bounds[3].as("px") );	
 
 				var xOffset = 0;
 				var yOffset = 0;
@@ -118,6 +136,7 @@ function PP_PageBuild (caseInfo, cInfo)
 					xOffset = xCal - CONFIG_MMToPix(modulInfo["上下留边"]*1.0) - layerMain.bounds[2].as("px");
 					yOffset = yCal + CONFIG_MMToPix(modulInfo["左右留边"]*1.0) - layerMain.bounds[1].as("px");
 				}
+                
 
 				LOG_Add_Info ("xOffset:" + xOffset + " yOffset:" + yOffset);
                 
