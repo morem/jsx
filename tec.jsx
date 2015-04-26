@@ -82,12 +82,11 @@ function TEC_GetGlobalInfo ()
 function TEC_GetPicInfo (picDirectory, tec)
 {
 	var configPath = picDirectory + "./config.xml";
-    if (false == CheckFileExists(configPath))return TEC_GetGlobalInfo();
+    if (false == File_CheckFileExist(configPath))return TEC_GetGlobalInfo();
     var userTecInfo = TEC_GetInfoByPath ();
     if (typeof (userTecInfo[tec]) != "undefined") return userTecInfo[tec];
     return g_tecInfo[tec];
 }
-
 
 function TEC_GetCustomInfo (customPath)
 {
@@ -131,8 +130,6 @@ function TEC_SetLayersVisibleOneOf (doc, layers)
         }
     }
 }
-
-function TEC_ProCSVInfo_
 
 function TEC_ProCSVInfo (csv)
 {
