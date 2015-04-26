@@ -11,27 +11,26 @@
 #include "pos.jsx"
 function TEC_GetLayerMapPath (tec)
 {
-
-	return PATH_GetConfigPath() + "./BASE/config.xml";
+    return PATH_GetConfigPath() + "./BASE/config.xml";
 }
 
 function TEC_GetAttr (x){}
 
 function TEC_ParseLayerInfo (layerDesp)
 {
-	var lArray = new Object ();
+    var lArray = new Object ();
     var layers = layerDesp.layer;
     var i = 0;
     for (i = 0; i < layers.length(); i ++)
     {
-		var e = new Object ();
+        var e = new Object ();
         e.name = layers[i].@name.toString ();
         e.priority = layers[i].@priority.toString ();
         e.attr = layers[i].@attr.toString ();
         e.id = layers[i].@id.toString ();
-		lArray[e.priority]= e;    
+        lArray[e.priority]= e;    
     }
-	return lArray;    
+    return lArray;    
 }
 
 
@@ -54,7 +53,7 @@ function TEC_GetInfoByPath (path)
 {
     var content = GetAFileContent (path);
     
-	var config = new XML (content);
+    var config = new XML (content);
     var tecType = config.children();
     var s = new Object ();
     var i = 0;
@@ -72,8 +71,8 @@ function TEC_GetInfoByPath (path)
 var g_tecInfo = null;
 function TEC_GetGlobalInfo ()
 {
-	if (null != g_tecInfo)return g_tecInfo;
-	var path = TEC_GetLayerMapPath ();
+    if (null != g_tecInfo)return g_tecInfo;
+    var path = TEC_GetLayerMapPath ();
     g_tecInfo = TEC_GetInfoByPath (path);
     return g_tecInfo;
 }
@@ -81,7 +80,7 @@ function TEC_GetGlobalInfo ()
 
 function TEC_GetPicInfo (picDirectory, tec)
 {
-	var configPath = picDirectory + "./config.xml";
+    var configPath = picDirectory + "./config.xml";
     if (false == File_CheckFileExist(configPath))return TEC_GetGlobalInfo();
     var userTecInfo = TEC_GetInfoByPath ();
     if (typeof (userTecInfo[tec]) != "undefined") return userTecInfo[tec];
@@ -90,43 +89,43 @@ function TEC_GetPicInfo (picDirectory, tec)
 
 function TEC_GetCustomInfo (customPath)
 {
-	return g_tecInfo;
+    return g_tecInfo;
 }
 
 function TEC_GetInfo_OneOf (tec, pic_spot)
 {
-	return g_tecInfo[tec].file[0][pic_spot];
+    return g_tecInfo[tec].file[0][pic_spot];
 }
 
 
 function TEC_OpenDoc ()
 {
-	var src = File_GetTemp( PATH_GetPageTempatePath ());
+    var src = File_GetTemp( PATH_GetPageTempatePath ());
     var templateFile = new File (src);
-	var doc = app.open(templateFile);
+    var doc = app.open(templateFile);
     return doc;
 }
 
 function TEC_CloseDoc ()
 {
-	return ;
+    return ;
 }
 
 function TEC_GetLayers (elementInfo)
 {
     var tec = elementInfo.tec;
-	var tecInfo = TEC_GetPicInfo (elementInfo.srcDir,tec);
+    var tecInfo = TEC_GetPicInfo (elementInfo.srcDir,tec);
     elementInfo.picLayerOneOf = TEC_GetInfo_OneOf (tec, "picture");
     elementInfo.spotLayerOneOf =  TEC_GetInfo_OneOf (tec, "spot");
 }
 
 function TEC_SetLayersVisibleOneOf (doc, layers)
 {
-	for (i in layers)
+    for (i in layers)
     {
-		if (CheckLayerExist (doc, layers[i].name))
+        if (CheckLayerExist (doc, layers[i].name))
         {
-			doc.artLayers[layers[i].name].visible = true;
+            doc.artLayers[layers[i].name].visible = true;
         }
     }
 }
@@ -141,6 +140,7 @@ function TEC_ProCSVInfo (csv)
         {
             var element = csv[case_id][x];
             element.stage = 0;
+            element.modul = case_id;
             element.fileIndex = 0;
             element.stageDesp = ["picture", "spot", "relief"];
             element.picTargetPath =  TEC_GetTargetPath (case_id, element.pic_no, element.tec, "picture");
@@ -173,7 +173,7 @@ function TEC_ProCSVInfo (csv)
 
 function TEC_GetPicWithLayer (srcPath, layers)
 {
-	/*step1: get a temp file for edif first*/
+    /*step1: get a temp file for edif first*/
     var srcPathTemp = File_GetTemp (srcPath);
     if (null == srcPathTemp){
         LOG_Add_Error("GetTemp File error src:" + srcPath);
@@ -183,21 +183,20 @@ function TEC_GetPicWithLayer (srcPath, layers)
     /*step2: set layer visible by the info.xxxOneOf*/
     var srcFile = new File (srcPathTemp);
     var doc = app.open (srcFile);
-    Layer_SetAllLayerUnVisible (doc);
-    
-	TEC_SetLayersVisibleOneOf (doc, layers);
+
+    Layer_SetLayerByInfo (doc, layers);
 
     /*step3: add dot every corner, and save in tmp directoyr*/
-	Layer_NewLayerAndDot (doc);
+    Layer_NewLayerAndDot (doc);
     doc.saveAs (srcFile, GetTIFFParam(), true);
-	CloseDoc(doc);
+    CloseDoc(doc);
     return srcPathTemp;
 }
 
 function TEC_ProPicByCaseShape (modul, srcPath, targetPath, bResize)
 {
     var templatePath = PicLib_GetShapePath (modul);
-	var templatePathTemp = File_GetTemp (templatePath);
+    var templatePathTemp = File_GetTemp (templatePath);
     if (null == templatePathTemp){
         LOG_Add_Error("GetTemp File error src:" + templatePath);
         return null;
@@ -231,19 +230,19 @@ function TEC_ProPicByCaseShape (modul, srcPath, targetPath, bResize)
 
     docTemplate.pathItems["case_path"].makeSelection (0);
     try{
-	    docTemplate.selection.invert();
-	    docTemplate.selection.clear();
+        docTemplate.selection.invert();
+        docTemplate.selection.clear();
     }
-	catch(err)
-	{}
+    catch(err)
+    {}
 
     if (bResize)
     {
-		var modulInfo = CaseInfo_GetCaseInfo (modul);
+        var modulInfo = CaseInfo_GetCaseInfo (modul);
         Doc_Resize (docTemplate, new UnitValue(modulInfo.width,"mm"), new UnitValue(modulInfo.height,"mm"), 254);
     }
 
-	Layer_NewLayerAndDot (docTemplate);
+    Layer_NewLayerAndDot (docTemplate);
 
     var targetFile = new File (targetPath);
     docTemplate.saveAs(targetFile, GetTIFFParam(), true);
@@ -254,31 +253,31 @@ function TEC_ProPicByCaseShape (modul, srcPath, targetPath, bResize)
 function TEC_GetElement (element)
 {
 
-	var srcPath = TEC_GetPicWithLayer (element.src,element.oneOfLayer);
+    var srcPath = TEC_GetPicWithLayer (element.src,element.oneOfLayer);
     var shapePath = TEC_ProPicByCaseShape (element.modul, srcPath, element.targetPath, true);
-	return shapePath;
+    return shapePath;
 }
 
 
 function TEC_GetAllElement (info)
 {
-	var elementInfo;
+    var elementInfo;
     //if(false == DEP_Check ())return elementInfo;    
     
     for (x in  info.element)
     {
-    	var layers = TEC_GetLayers (info.element[x]);
+        var layers = TEC_GetLayers (info.element[x]);
         var element = info.element[x];
         element.oneOfLayer = element.picLayerOneOf;
         element.targetPath = element.picTargetPath;
-		var pathElementPic = TEC_GetElement (info.element[x]);
+        var pathElementPic = TEC_GetElement (info.element[x]);
         element.pathElementPic = path;
-        
+
         element.oneOfLayer = element.spotLayerOneOf;
         element.targetPath = element.spotTargetPath;
-		var pathElementSpot = TEC_GetElement (info.element[x]); 
+        var pathElementSpot = TEC_GetElement (info.element[x]); 
         element.pathElementSpot = pathElementSpot ;
-	}
+    }
     return info;
 }
 
@@ -312,7 +311,7 @@ function TEC_MoveElementToDoc (doc,layerSet,modul,srcPath, pos, name)
 
 function TEC_MoveAllElementToDoc (doc, elementArray)
 {
-    var pos = POS_BoardGet (0,0, "i6p_a", "RT", 1000, 1000);
+    var pos = POS_BoardGet ("A", "i6_a", "RT", 950, 600);
     var index = 0;
     var layerSet = doc.layerSets.add();
     layerSet.name = "picture";
@@ -323,15 +322,15 @@ function TEC_MoveAllElementToDoc (doc, elementArray)
     {
             for (j = 0; j < elementArray[i].num; j ++ )
             {
-                  layerSet =  doc.layerSets.getByName("picture");
+                 layerSet =  doc.layerSets.getByName("picture");
                  TEC_MoveElementToDoc (doc,layerSet,elementArray[i].modul, elementArray[i].picTargetPath, pos[index], "pic_" + index);
-                  layerSet =  doc.layerSets.getByName("spot");
+                 layerSet =  doc.layerSets.getByName("spot");
                  TEC_MoveElementToDoc (doc,layerSet, elementArray[i].modul, elementArray[i].spotTargetPath, pos[index], "spot" + index);
                 index ++;
              }
     }
 
-	return ;
+    return ;
 }
 
 function TEC_CombineLayers (doc, type)
@@ -342,8 +341,8 @@ function TEC_CombineLayers (doc, type)
 
 function TEC_CombineElement (info, doc)
 {
-	info.pictureLayer = doc.layerSets.getByName ("picture").merge();
-	info.spotLayer = doc.layerSets.getByName ("spot").merge();
+    info.pictureLayer = doc.layerSets.getByName ("picture").merge();
+    info.spotLayer = doc.layerSets.getByName ("spot").merge();
     return true;
 }
 
@@ -351,15 +350,15 @@ function TEC_GetSpotLayerByArtLayer (doc, layerName)
 {
     doc.activeLayer = doc.artLayers[layerName];
     app.doAction ("getCurrentLayerSelection", "sys");
-	app.doAction ("buildSpotCh", "sys");   
+    app.doAction ("buildSpotCh", "sys");   
     doc.activeLayer.remove();
     doc.mergeVisibleLayers ();
 }
 function TEC_SaveAs (doc)
 {
     var t = new Date(); 
-	var timeString = t.getHours() + "-"+ t.getMinutes() + "-"+ t.getSeconds();
-	var saveType = GetSaveType ();
+    var timeString = t.getHours() + "-"+ t.getMinutes() + "-"+ t.getSeconds();
+    var saveType = GetSaveType ();
     var targetFile = new File (GetWorkPath() + "zB_result_"+ timeString + "." + saveType);
     doc.saveAs(targetFile, GetSaveParam(saveType), true);
 }
@@ -367,7 +366,7 @@ function TEC_SaveAs (doc)
 
 function TEC_GetTargetPath (modul, picMask, type ,tag)
 {
-	return  PATH_GetTempDirectory() + picMask + "_" +  modul  + "_" +  type + "_" + tag + ".tif"
+    return  PATH_GetTempDirectory() + picMask + "_" +  modul  + "_" +  type + "_" + tag + ".tif"
 
 }
 
