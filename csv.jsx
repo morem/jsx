@@ -272,6 +272,7 @@ function CSV_Parse_Direct(s_init)
     {
         var data = new Object();
         var key = new Object ();
+        var bInvaild = false;
         
         data = csv_data[i];
         key = data[s_init.keyIndex];
@@ -285,13 +286,25 @@ function CSV_Parse_Direct(s_init)
             t = s_init.data_header[j];
 
             var d = data[t.index];
+            if (typeof (t.filter) != "undefined")
+            {
+                if (null == d.match(t.filter)){
+                    bInvaild = true;
+                };
+            }
             if ((typeof (d) == "undefined"  || d.length == 0) &&
                 typeof (t.default) != "undefined")d = t.default;
             contents[t.text] = d;
             if (typeof(t.textMap)  != "undefined")
                 contents[t.textMap] = d;
         }
-        dataStruct [key] = contents;
+
+        if (bInvaild == true)continue;
+        
+        if (typeof(s_init.prefix)=="undefined")
+            dataStruct [key] = contents;
+        else
+            dataStruct [s_init.prefix + key] = contents;
     }
 
     return dataStruct; 
