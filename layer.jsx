@@ -76,21 +76,35 @@ function GetTextLayerContexts(doc, name)
 function Layer_SetVisible (doc, name, visible)
 {
     if (CheckLayerExist (doc, name))
-		doc.artLayers[name].visible = visible;
+        doc.artLayers[name].visible = visible;
 }
 
 function Layer_SetVisibleOneOf (doc, layers)
 {
-	var i = 0;
-	for ( i in layers)
+    var i = 0;
+    for ( i in layers)
     {
-		if (CheckLayerExist (doc, layers[i]))
+        if (CheckLayerExist (doc, layers[i]))
         {
-			doc.artLayers[layers[i]].visible = true;
+            doc.artLayers[layers[i]].visible = true;
         }
     }
 
 }
+
+function Layer_SetLayerByInfo (doc, layersInfo)
+{
+    var i;
+    for (i in layersInfo)
+    {
+        if (CompareString(layersInfo[i].attr, "except"))
+            Layer_SetVisible (doc, layersInfo[i].name, false);
+        if (CompareString(layersInfo[i].attr, "or"))
+            Layer_SetVisible (doc, layersInfo[i].name, true);
+    }
+}
+
+
 
 function Layer_SetAllLayerUnVisible (doc)
 {
@@ -111,8 +125,8 @@ function SetDocLayerVaild (doc, arrayName)
 {   
     var i = 0;
 
-	if (doc.artLayers.length == 1)return ;
-	
+    if (doc.artLayers.length == 1)return ;
+
     for (var j = 0; j < doc.artLayers.length; j ++)
             doc.artLayers[j].visible = false;
     for (x in arrayName)
@@ -131,38 +145,38 @@ function SetDocLayerVaild (doc, arrayName)
 
 function Layer_NewLayerAndDot (doc)
 {
-	var layer = doc.artLayers.add ();
-	var width = doc.width.as("px");
-	var height = doc.height.as("px");
-	layer.name = "dot";
+    var layer = doc.artLayers.add ();
+    var width = doc.width.as("px");
+    var height = doc.height.as("px");
+    layer.name = "dot";
 
-	var region = Array (
-				Array(0,0),Array(1,0),
-				Array(1,1),	Array(0,1),			
-				);
+    var region = Array (
+                Array(0,0),Array(1,0),
+                Array(1,1),Array(0,1),
+                );
 
-	doc.selection.select (region);
-	var c = new SolidColor;
-	c.cmyk.black = 100;
-	c.cmyk.cyan = 0;
-	c.cmyk.magenta = 0;
-	c.cmyk.yellow = 0;
-	doc.selection.fill (c);
+    doc.selection.select (region);
+    var c = new SolidColor;
+    c.cmyk.black = 0;
+    c.cmyk.cyan = 0;
+    c.cmyk.magenta = 0;
+    c.cmyk.yellow = 0;
+    doc.selection.fill (c);
 
-	var region = Array (
-				Array(width - 1,height - 1),Array(width, height - 1),
-				Array(width , height),	Array(width - 1,height),
-				);
+    var region = Array (
+                Array(width - 1,height - 1),Array(width, height - 1),
+                Array(width , height),Array(width - 1,height),
+                );
 
-	doc.selection.select (region);
-	c = new SolidColor;
-	c.cmyk.black = 100;
-	c.cmyk.cyan = 0;
-	c.cmyk.magenta = 0;
-	c.cmyk.yellow = 0;
-	doc.selection.fill (c);
-	
-	return layer;
+    doc.selection.select (region);
+    c = new SolidColor;
+    c.cmyk.black = 100;
+    c.cmyk.cyan = 0;
+    c.cmyk.magenta = 0;
+    c.cmyk.yellow = 0;
+    doc.selection.fill (c);
+
+    return layer;
 }
 
 function HorzMiddleLayerByLayer (doc , refArtLayer, adujstArtLayer)
