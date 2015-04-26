@@ -1,6 +1,7 @@
 #include "utils.jsx"
 #include "config.jsx"
 #include "csv.jsx"
+#include "log.jsx"
 
 var g_caseInfo = null;
 
@@ -62,10 +63,12 @@ function CaseInfo_GetCaseInfo (caseID)
     e.format = 's';
     s_init.data_header.push (e);
 
-
     var caseIDInfo = CSV_Parse_Direct (s_init);
-	g_caseInfo = caseIDInfo;
+    g_caseInfo = caseIDInfo;
     if (typeof (caseIDInfo[caseID]) != 'undefined')return caseIDInfo[caseID];
+
+    LOG_Add_Error("can't find caseID:" + caseID);
+
     return null;
 
 }
