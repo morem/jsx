@@ -217,9 +217,12 @@ function CSV_Parse(s_init)
             {
                 var t = new Object();
                 t = s_init.data_header[j];
-                contents[t.text] = data[t.index];
+                var d = data[t.index];
+                if ((typeof (d) == "undefined"  || d.length == 0) &&
+                    typeof (t.default) != "undefined")d = t.default;
+                contents[t.text] = d;
                 if (typeof(t.textMap) != "undefined")
-                	contents[t.textMap] = data[t.index];
+                    contents[t.textMap] = d;
             }
             dataStruct [key].push (contents);
         }
@@ -232,9 +235,14 @@ function CSV_Parse(s_init)
             {
                 var t = new Object();
                 t = s_init.data_header[j];
-                contents[t.text] = data[t.index];
+                var d = data[t.index];
+
+                if ((typeof (d) == "undefined"  || d.length == 0) &&
+                    typeof (t.default) != "undefined")d = t.default;
+
+                contents[t.text] = d;
                 if (typeof(t.textMap) != "undefined")
-                	contents[t.textMap] = data[t.index];
+                    contents[t.textMap] = d;
             }   
             dataStruct [key] = contents;
         }
@@ -256,7 +264,7 @@ function CSV_Parse_Direct(s_init)
     //s_init.data_header[0..900].format = 'n' 'p' 's' 't'
     //n Êý×ÖÐ¡Êý
     var dataStruct = new Array ();
-	if (!File_CheckFileExist(s_init.path)) return dataStruct;
+    if (!File_CheckFileExist(s_init.path)) return dataStruct;
     var csv_data = CSV_Load (s_init.path);
     CSV_GetHeaderInfo (s_init, csv_data);
 
@@ -264,22 +272,39 @@ function CSV_Parse_Direct(s_init)
     {
         var data = new Object();
         var key = new Object ();
+        var bInvaild = false;
         
         data = csv_data[i];
         key = data[s_init.keyIndex];
         if (key == null) continue;
         if (key.length == 0)continue;
-        
+
         var contents = new Object ();
         for (var j= 0; j < s_init.data_header.length; j ++)
         {
             var t = new Object();
             t = s_init.data_header[j];
-            contents[t.text] = data[t.index];
+
+            var d = data[t.index];
+            if (typeof (t.filter) != "undefined")
+            {
+                if (null == d.match(t.filter)){
+                    bInvaild = true;
+                };
+            }
+            if ((typeof (d) == "undefined"  || d.length == 0) &&
+                typeof (t.default) != "undefined")d = t.default;
+            contents[t.text] = d;
             if (typeof(t.textMap)  != "undefined")
-            	contents[t.textMap] = data[t.index];
+                contents[t.textMap] = d;
         }
-        dataStruct [key] = contents;
+
+        if (bInvaild == true)continue;
+        
+        if (typeof(s_init.prefix)=="undefined")
+            dataStruct [key] = contents;
+        else
+            dataStruct [s_init.prefix + key] = contents;
     }
 
     return dataStruct; 

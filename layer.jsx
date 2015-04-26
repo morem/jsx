@@ -94,6 +94,7 @@ function Layer_SetVisibleOneOf (doc, layers)
 
 function Layer_SetAllLayerUnVisible (doc)
 {
+    if (doc.artLayers.length == 1) return;
     for (var j = 0; j < doc.artLayers.length; j ++)
             doc.artLayers[j].visible = false;
 }
