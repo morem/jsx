@@ -33,14 +33,14 @@ function PPlan_GetCaseInfo ()
     e.text = "数量";
     e.textMap = "num";
     e.format = 's';
-	e.default = 1;
+    e.default = 1;
     s_init.data_header.push (e);
 
     var e  = new Object();
     e.text = "工艺";
     e.textMap = "tec";
     e.format = 's';
-	e.default = "dm";
+    e.default = "dm";
     s_init.data_header.push (e);
 
     return  CSV_Parse (s_init);
