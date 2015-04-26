@@ -82,7 +82,7 @@ function TEC_GetGlobalInfo ()
 function TEC_GetPicInfo (picDirectory, tec)
 {
 	var configPath = picDirectory + "./config.xml";
-    if (false == CheckFileExists(configPath))return TEC_GetGlobalInfo();
+    if (false == File_CheckFileExist(configPath))return TEC_GetGlobalInfo();
     var userTecInfo = TEC_GetInfoByPath ();
     if (typeof (userTecInfo[tec]) != "undefined") return userTecInfo[tec];
     return g_tecInfo[tec];
@@ -132,26 +132,25 @@ function TEC_SetLayersVisibleOneOf (doc, layers)
     }
 }
 
-function TEC_ProCSVInfo_
 
 function TEC_ProCSVInfo (csv)
 {
-	var case_id;
+    var case_id;
     var info = new Object();
     info.element = new Array ();
-	for (case_id in csv)
-	{
-		for (var x in csv[case_id])
-		{
-			var element = csv[case_id][x];
-			element.stage = 0;
+    for (case_id in csv)
+    {
+        for (var x in csv[case_id])
+        {
+            var element = csv[case_id][x];
+            element.stage = 0;
             element.fileIndex = 0;
             element.stageDesp = ["picture", "spot", "relief"];
-			element.picTargetPath =  TEC_GetTargetPath (case_id, element.pic_no, element.tec, "picture");
-			element.spotTargetPath = TEC_GetTargetPath (case_id, element.pic_no, element.tec, "spot");
-			element.reliefTargetPath = TEC_GetTargetPath (case_id, element.pic_no, element.tec, "relief");
-            
-			if (element.num.length == 0){
+            element.picTargetPath =  TEC_GetTargetPath (case_id, element.pic_no, element.tec, "picture");
+            element.spotTargetPath = TEC_GetTargetPath (case_id, element.pic_no, element.tec, "spot");
+            element.reliefTargetPath = TEC_GetTargetPath (case_id, element.pic_no, element.tec, "relief");
+
+            if (element.num.length == 0){
                 element["ÊýÁ¿"] = 1;
                 element.num = 1;
             }
@@ -159,15 +158,14 @@ function TEC_ProCSVInfo (csv)
             element.src = PicLib_NumOrNameToPath(case_id, element.pic_no);
             if (null == element.src)
             {
-                LOG_Add_Error ("Can't find the case picture " + element.pic_no);
-				MSG_OutPut("Can't find the case picture " + element.pic_no);
+                LOG_ErrMsgOut ("Can't find the case picture " + element.pic_no);
                 return ;
             }
             element.srcDir = Utils_GetDirectoryPathFromPath(element.src);
-			element.done = 0;
+            element.done = 0;
             info.element.push (element);
-		}
-	}
+        }
+    }
     
     machine_number = GetMachineNumber ();
     info.machine_number = GetMachineNumber ();
@@ -289,35 +287,35 @@ function TEC_GetAllElement (info)
 
 function TEC_MoveElementToDoc (doc,layerSet,modul,srcPath, pos, name)
 {
-	var modulInfo = CaseInfo_GetCaseInfo (modul);
-	duplicateFromNew_Ext(doc, layerSet,ElementPlacement.INSIDE, srcPath, name);
+    var modulInfo = CaseInfo_GetCaseInfo (modul);
+    duplicateFromNew_Ext(doc, layerSet,ElementPlacement.INSIDE, srcPath, name);
     var xCal = pos.x;
-	var yCal = pos.y;
+    var yCal = pos.y;
     var layerMain = layerSet.artLayers[name];
     layerMain.rotate (modulInfo["degree"]);
 
-	var xOffset = 0;
-	var yOffset = 0;
-	if (CompareString(modulInfo["degree"],"0") || CompareString(modulInfo["degree"],"180") || CompareString(modulInfo["degree"],"-180"))
-	{
-		xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[2].as("px");
-		yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[1].as("px");
-	}
-	else
-	{
-		xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[2].as("px");
-		yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[1].as("px");
-	}
+    var xOffset = 0;
+    var yOffset = 0;
+    if (CompareString(modulInfo["degree"],"0") || CompareString(modulInfo["degree"],"180") || CompareString(modulInfo["degree"],"-180"))
+    {
+        xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[2].as("px");
+        yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[1].as("px");
+    }
+    else
+    {
+        xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[2].as("px");
+        yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[1].as("px");
+    }
     
     layerMain.translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
-	layerMain.rasterize (RasterizeType.ENTIRELAYER);
+    layerMain.rasterize (RasterizeType.ENTIRELAYER);
 
-	return ;
+    return ;
 }
 
 function TEC_MoveAllElementToDoc (doc, elementArray)
 {
-	var pos = POS_Get ();
+    var pos = POS_BoardGet (0,0, "i6p_a", "RT", 1000, 1000);
     var index = 0;
     var layerSet = doc.layerSets.add();
     layerSet.name = "picture";
@@ -378,7 +376,7 @@ function TEC_GetTargetPath (modul, picMask, type ,tag)
 
 function TEC_BuildInfo ()
 {
-	var csv = PPlan_GetCaseInfo ();
+    var csv = PPlan_GetCaseInfo ();
     var info = TEC_ProCSVInfo (csv);
     return info;
 }
@@ -386,7 +384,7 @@ function TEC_BuildInfo ()
 
 function TEC_BuildPage ()
 {
-	var info = TEC_BuildInfo ();
+    var info = TEC_BuildInfo ();
     
     var ret = TEC_GetAllElement (info);
     var doc ;
