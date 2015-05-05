@@ -61,12 +61,12 @@ function GetSaveType ()
 function GetCfgBasePath ()
 {
     //var a =  File.decode(GetParams("CFG_BASE_PATH","C:/photoshop.cfg"));
-	//if (a == null)
-	//{
-		a = $.getenv("CFG_BASE_PATH");
-		return a;		
-	//}
-	//return a;
+    //if (a == null)
+    //{
+        a = $.getenv("CFG_BASE_PATH");
+        return a;
+    //}
+    //return a;
 }
 
 

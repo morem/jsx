@@ -121,3 +121,42 @@ function File_GetTemp (src)
 	return null;    
 }
 
+function File_FindTheLeast (src)
+{
+    var ext = Utils_GetFileExtFromPath (src);
+    var fileName = Utils_GetFileNameNoExtFromPath (src);
+    var dir = Utils_GetDirectoryPathFromPath (src);
+
+    var i = 0;
+    for (i ; i < 100; i ++)
+    {
+        var t = dir + "./" + fileName + "_" + i + "." + ext;
+        if (!File_CheckFileExist(t))return t;
+    }
+}
+
+
+
+function File_CopyFileToDir (path, dir)
+{
+    var file = new File (path);
+
+    var fileName = Utils_GetFileNameFromPath(path);
+
+    if (!File_CheckFileExist(path))
+        LOG_Add_Error ("file Not Exist, path:" + path);
+
+    var i = 0;
+    for ( i = 0 ; i < 3 ; i ++)
+    {
+        if (false == file.copy (dir + fileName))
+        {
+            LOG_Add_Error(file.error + "   fileName:" + path);
+            continue;
+        }
+        break;
+    }
+    file.close();
+    if (i == 3)return false;
+    return true;
+}

@@ -15,9 +15,9 @@
 
 function POS_GetBoardInfo (nameBoard)
 {
-    var path = PATH_GetBoardDir () + nameBoard + ".csv";
+    var path = PATH_GetBoardDir () + nameBoard + "/cal.csv";
     if (!File_CheckFileExist(path )){
-        LOG_ErrMsgOut("This Board Not Exist Required BoardName:" + nameBoard);
+        LOG_ErrMsgOut("This Board Not Exist Required Path:" + path);
         return ;
     }
 
@@ -52,6 +52,12 @@ function POS_GetBoardInfo (nameBoard)
     e.text = "yOffset";
     e.format = 's';
     s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "degree";
+    e.format = 's';
+    s_init.data_header.push (e);
+
 
     var csvInfo=  CSV_Parse_Direct (s_init);
     return csvInfo;
@@ -231,6 +237,12 @@ function POS_GetXYOffset (startTag)
     e.format = 's';
     s_init.data_header.push (e);
 
+    var e  = new Object();
+    e.text = "degree";
+    e.format = 's';
+    s_init.data_header.push (e);
+
+
     var cvs = CSV_Parse_Direct (s_init);
 
     return cvs[startTag];
@@ -254,6 +266,8 @@ function POS_ColGet (data, orgPos,  width, height)
             col[i] = new Object ();
             col [i].x = x;
             col [i].y = y;
+            col [i].degree = data[i].degree;
+            LOG_Add_Info("The pic cal index:" + i + " x:" + x + " y:" + y);
         }
         }else 
         {
@@ -277,6 +291,12 @@ function POS_BoardGet (startTag, nameBoard, orgPos, picWidthMM, picHeightMM, tes
     {
         boardCol[index].x =  boardCol[index].x *1.0 + offset.x*1.0;
         boardCol[index].y = boardCol[index].y*1.0 + offset.y*1.0;
+        boardCol[index].degree = boardCol[index].degree*1.0 + offset.degree*1.0;
+
+        LOG_Add_Info("The original cal index:" + index +
+                     " x:" + boardCol[index].x +
+                     " y:" + boardCol[index].y +
+                     " degree:"+ boardCol[index].degree);
 
         if (typeof (testXOffset) == "undefined" ||
         typeof (testYOffset) == "undefined")continue ;
@@ -287,7 +307,7 @@ function POS_BoardGet (startTag, nameBoard, orgPos, picWidthMM, picHeightMM, tes
 
     var col = POS_ColGet (boardCol, "RT", picWidthMM, picHeightMM)
 
-return col;
+    return col;
 }
 
 /*

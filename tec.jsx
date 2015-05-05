@@ -134,6 +134,8 @@ function TEC_ProCSVInfo (csv)
     var case_id;
     var info = new Object();
     info.element = new Array ();
+    info.fixture_pos = null;
+    info.fixture_id = null;
     for (case_id in csv)
     {
         for (var x in csv[case_id])
@@ -146,11 +148,11 @@ function TEC_ProCSVInfo (csv)
             element.picTargetPath =  TEC_GetTargetPath (case_id, element.pic_no, element.tec, "picture");
             element.spotTargetPath = TEC_GetTargetPath (case_id, element.pic_no, element.tec, "spot");
             element.reliefTargetPath = TEC_GetTargetPath (case_id, element.pic_no, element.tec, "relief");
+            if (info.fixture_pos == null)
+                info.fixture_pos = element.fixture_pos;
 
-            if (element.num.length == 0){
-                element["ÊýÁ¿"] = 1;
-                element.num = 1;
-            }
+            if (info.fixture_id == null)
+                info.fixture_id = element.fixture_id;
 
             element.src = PicLib_NumOrNameToPath(case_id, element.pic_no);
             if (null == element.src)
@@ -216,6 +218,9 @@ function TEC_ProPicByCaseShape (modul, srcPath, targetPath, bResize)
     var orgHeight = GetLayerHeight (layerMain);
     var targetWidth = docTemplate.width.as("px");
     var targetHeight = docTemplate.height.as("px");
+
+    LOG_Add_Info("Target Width:" + targetWidth + " Height:" + targetHeight);
+    LOG_Add_Info("Org Width:" + orgWidth + " Height:" + orgHeight);
     
     layerMain.translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
 
@@ -236,10 +241,20 @@ function TEC_ProPicByCaseShape (modul, srcPath, targetPath, bResize)
     catch(err)
     {}
 
+    try {
+        docTemplate.pathItems["case_wadiao"].makeSelection (0);
+        docTemplate.selection.clear();
+    }
+    catch (err){
+
+    }
     if (bResize)
     {
         var modulInfo = CaseInfo_GetCaseInfo (modul);
-        Doc_Resize (docTemplate, new UnitValue(modulInfo.width,"mm"), new UnitValue(modulInfo.height,"mm"), 254);
+        var w = modulInfo.width - 2 * modulInfo.intervalOfLeft;
+        var h = modulInfo.height - 2 * modulInfo.intervalOfBottom;
+        LOG_Add_Info("ReSize Width:"+ w + " Height:" + h);
+        Doc_Resize (docTemplate, new UnitValue(w,"mm"), new UnitValue(h,"mm"), 254);
     }
 
     Layer_NewLayerAndDot (docTemplate);
@@ -287,31 +302,28 @@ function TEC_MoveElementToDoc (doc,layerSet,modul,srcPath, pos, name)
     duplicateFromNew_Ext(doc, layerSet,ElementPlacement.INSIDE, srcPath, name);
     var xCal = pos.x;
     var yCal = pos.y;
+    var degree = pos.degree*1.0 + modulInfo["degree"]*1.0;
     var layerMain = layerSet.artLayers[name];
-    layerMain.rotate (modulInfo["degree"]);
+    layerMain.rotate (degree);
 
     var xOffset = 0;
     var yOffset = 0;
-    if (CompareString(modulInfo["degree"],"0") || CompareString(modulInfo["degree"],"180") || CompareString(modulInfo["degree"],"-180"))
-    {
-        xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[2].as("px");
-        yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[1].as("px");
-    }
-    else
-    {
-        xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[2].as("px");
-        yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[1].as("px");
-    }
-    
+    xOffset = xCal - CONFIG_MMToPix(modulInfo["intervalOfBottom"]*1.0) - layerMain.bounds[2].as("px");
+    yOffset = yCal + CONFIG_MMToPix(modulInfo["intervalOfLeft"]*1.0) - layerMain.bounds[1].as("px");
+
     layerMain.translate(new UnitValue(xOffset,"px"), new UnitValue(yOffset,'px'));
     layerMain.rasterize (RasterizeType.ENTIRELAYER);
 
     return ;
 }
 
-function TEC_MoveAllElementToDoc (doc, elementArray)
+function TEC_MoveAllElementToDoc (doc, info)
 {
-    var pos = POS_BoardGet ("A", "i6_a", "RT", 950, 600);
+    var width = Doc_GetDocWidthAs (doc, "mm");
+    var height = Doc_GetDocHeightAs (doc, "mm");
+    var pos = POS_BoardGet (info.fixture_pos, info.fixture_id, "RT", width , height);
+
+    var elementArray = info.element;
     var index = 0;
     var layerSet = doc.layerSets.add();
     layerSet.name = "picture";
@@ -353,13 +365,21 @@ function TEC_GetSpotLayerByArtLayer (doc, layerName)
     app.doAction ("buildSpotCh", "sys");   
     doc.activeLayer.remove();
     doc.mergeVisibleLayers ();
+
+    var bd = [0,0,0,0];
+    bd[0] = doc.activeLayer.bounds[0] - 2
+    bd[1] = 0;
+    bd[2] = new UnitValue (doc.width.as("px"), "px");
+    bd[3] = doc.activeLayer.bounds[3] + 2;
+    doc.crop (bd);
 }
 function TEC_SaveAs (doc)
 {
     var t = new Date(); 
     var timeString = t.getHours() + "-"+ t.getMinutes() + "-"+ t.getSeconds();
     var saveType = GetSaveType ();
-    var targetFile = new File (GetWorkPath() + "zB_result_"+ timeString + "." + saveType);
+    var fileName = File_FindTheLeast (GetWorkPath() + "zB_result." +  saveType);
+    var targetFile = new File (fileName);
     doc.saveAs(targetFile, GetSaveParam(saveType), true);
 }
 
@@ -386,7 +406,7 @@ function TEC_BuildPage ()
     var doc ;
     doc = TEC_OpenDoc(); 
     
-    ret = TEC_MoveAllElementToDoc (doc,info.element);
+    ret = TEC_MoveAllElementToDoc (doc,info);
     
     ret = TEC_CombineElement (info, doc);
     

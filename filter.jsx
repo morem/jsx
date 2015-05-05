@@ -12,8 +12,7 @@ var g_path_filter = null;
 function Filter_GetFilterPath ()
 {
 	if (g_path_filter != null) return g_path_filter;
-	g_path_filter =File.decode(GetParam("CONFIG_DIRECTORY"))  + 
-				   File.decode(GetParam("MACHINE_NO"))  + "/filter.csv"
+	g_path_filter =File.decode(GetParam("CONFIG_DIRECTORY"))  + "BASE/filter.csv"
     	return g_path_filter;
 }
 

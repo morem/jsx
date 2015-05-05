@@ -179,5 +179,5 @@ function WorkPicLib_BuildSearchIndex ()
 
 
 machine_number = GetMachineNumber ();
-//WorkPicLib_Work ("number");
+WorkPicLib_Work ("number");
 WorkPicLib_BuildSearchIndex ();

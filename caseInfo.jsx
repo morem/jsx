@@ -8,12 +8,12 @@ var g_caseInfo = null;
 function CaseInfo_GetCaseInfo (caseID)
 {
     if (g_caseInfo != null){
-	    if (typeof (g_caseInfo[caseID]) != 'undefined')
-			return g_caseInfo[caseID];
-		else 
-			return null;	
-	}
-	
+        if (typeof (g_caseInfo[caseID]) != 'undefined')
+            return g_caseInfo[caseID];
+        else
+            return null;
+    }
+
     var s_init = new Object ();
     s_init.path = PATH_GetCaseInfoPath();
     s_init.data_header_index = 0;

@@ -43,6 +43,21 @@ function PPlan_GetCaseInfo ()
     e.default = "dm";
     s_init.data_header.push (e);
 
+    var e  = new Object();
+    e.text = "º–æﬂŒª÷√";
+    e.textMap = "fixture_pos";
+    e.format = 's';
+    e.default = "A";
+    s_init.data_header.push (e);
+
+    var e  = new Object();
+    e.text = "º–æﬂ±‡∫≈";
+    e.textMap = "fixture_id";
+    e.format = 's';
+    e.default = "i6_a";
+    s_init.data_header.push (e);
+
+
     return  CSV_Parse (s_init);
 }
 
