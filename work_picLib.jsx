@@ -114,7 +114,7 @@ function WorkPicLib_Work (sortType)
 	
     var a = GetImageWidthAddHeightAsPx (PicLib_GetElementTemplate ());
     
-    Jigsaw_Init (PicLib_GetPicLabPath() + "./../summary/" + sortType + "/",12,4, a[0], a[1]);
+    Jigsaw_Init (PicLib_GetSummaryPath() + sortType + "/",12,4, a[0], a[1]);
     Jigsaw_Build (imageArray);
     Jigsaw_End ();
     
@@ -180,4 +180,4 @@ function WorkPicLib_BuildSearchIndex ()
 
 machine_number = GetMachineNumber ();
 WorkPicLib_Work ("number");
-WorkPicLib_BuildSearchIndex ();
+//WorkPicLib_BuildSearchIndex ();

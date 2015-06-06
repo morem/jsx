@@ -9,6 +9,7 @@
 #include "picLib.jsx"
 #include "msg.jsx"
 #include "pos.jsx"
+#include "dep.jsx"
 function TEC_GetLayerMapPath (tec)
 {
     return PATH_GetConfigPath() + "./BASE/config.xml";
@@ -267,7 +268,10 @@ function TEC_ProPicByCaseShape (modul, srcPath, targetPath, bResize)
 
 function TEC_GetElement (element)
 {
-
+    var aPath = new Array();
+    aPath.push (element.src);
+    aPath.push (PicLib_GetShapePath (element.modul));
+    if (true == DEP_CheckFileNewThan (element.targetPath, aPath))return;
     var srcPath = TEC_GetPicWithLayer (element.src,element.oneOfLayer);
     var shapePath = TEC_ProPicByCaseShape (element.modul, srcPath, element.targetPath, true);
     return shapePath;

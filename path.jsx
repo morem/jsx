@@ -109,3 +109,8 @@ function PATH_GetBoardDir ()
 {
     return PATH_GetConfigPath() + "./" + "board/";
 }
+
+function PATH_GetTTConfig ()
+{
+    return PATH_GetTempDirectory() + "build.cfg";
+}

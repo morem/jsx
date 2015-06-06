@@ -101,7 +101,7 @@ function File_GetTemp (src)
 	var fileExt  = Utils_GetFileExtFromPath (src);
 	var targetPath = tmpDir + fileName + "_" + Utils_GetTempNum () + "." + fileExt;
 
-	var i = 2;
+	var i = 10;
 	while (i --)
     {
 		var file = new File (src);

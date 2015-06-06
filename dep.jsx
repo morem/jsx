@@ -17,14 +17,14 @@ function DEP_GetFileModifiedTimeGMTMs (path)
 }
 function DEP_CheckFileNewThan(path , pathArray)
 {
-	var time = DEP_GetFileModifiedTimeGMTMs (path);
+    if (!File_CheckFileExist(path))return false;
+    var time = DEP_GetFileModifiedTimeGMTMs (path);
 
-	for (var i in pathArray)
-	{
-		
-		if (time < DEP_GetFileModifiedTimeGMTMs (pathArray[i]))return false;
-	}
+    for (var i in pathArray)
+    {
+        if (time < DEP_GetFileModifiedTimeGMTMs (pathArray[i]))return false;
+    }
 
-	return true;
+    return true;
 
 }

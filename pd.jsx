@@ -427,7 +427,7 @@ function PD_Work ()
 
 		//if (null != array[orderID][0]["订单状态"].match("交易关闭"))continue;
 		//if (null != array[orderID][0]["订单状态"].match("等待发货"))continue;
-       	if (PD_CheckHaveDone (orderID))continue ;
+       	//if (PD_CheckHaveDone (orderID))continue ;
 		
 		for (goodIndex in array[orderID])
 		{

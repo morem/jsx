@@ -7,6 +7,7 @@
 #include "file.jsx"
 #include "doc.jsx"
 #include "csv.jsx"
+#include "log.jsx"
 
 
 var dir = "";
@@ -26,25 +27,38 @@ function Jigsaw_Init (dir_t, row_t, line_t, eWidth_t,eHeight_t)
 
 function Jigsaw_GetPath (pre, index)
 {
-    return dir + "./pre" + index;
+    return dir + "pre" + index + ".jpg";
 }
 
 function Jigsaw_Build (images)
 {
     for (var i = 0 ; i < images.length; i ++)
     {
+        //var p = Jigsaw_GetPath("s",  parseInt((i+row*line - 1)/( row*line)));
+        //LOG_Add_Info("Check File Exist:" + p);
+        //if (File_CheckFileExist(p)){
+        //    LOG_Add_Info("File Exist");
+        //    continue;
+        //}
+        //LOG_Add_Info("File not Exist");
         if (doc == null)
             doc = app.documents.add ( 
                             new UnitValue (eWidth* row, "px"),
                             new UnitValue (eHeight*line, "px"),
                             72,"tmp",NewDocumentMode.RGB);
-        duplicateFrom ( doc,images[i],
-                        OpenDocumentType.JPEG, 
-                        "e" + i);
-         var xOffset = eWidth*(i%row);
-         var yOffset = eHeight *parseInt ((i%(row*line))/row);
-        doc.artLayers[ "e" + i].translate( new UnitValue(xOffset,"px"), 
-                                    new UnitValue(yOffset,"px"));
+        try{
+            duplicateFrom ( doc,images[i],
+                            OpenDocumentType.JPEG, 
+                            "e" + i);
+             var xOffset = eWidth*(i%row);
+             var yOffset = eHeight *parseInt ((i%(row*line))/row);
+            doc.artLayers[ "e" + i].translate( new UnitValue(xOffset,"px"), 
+                                        new UnitValue(yOffset,"px"));
+            }
+        catch (err)
+        {
+            LOG_Add_Error("File Error:" + images[i]);
+        }
 
         if ((i > 0 &&(0 == (i + 1)%(row*line))) || (i == (images.length - 1)))
         {

@@ -45,13 +45,13 @@ function STO_GetSTOInfo ()
     return t ;
 }
 
-function STO_GetMoremInfo ()
+function STO_GetMoremSlavesInfo (path)
 {
-     var s_init = new Object ();
+    var s_init = new Object ();
 
-    if (!File_CheckFileExist(STO_GetMoremPath()))return 0;
-    
-    s_init.path = STO_GetMoremPath();
+    if (!File_CheckFileExist(path))return 0;
+
+    s_init.path = path;
     s_init.data_header_index = 0;
     s_init.data_start = 1;
     s_init.key = "ÎïÁ÷µ¥ºÅ ";
@@ -78,6 +78,21 @@ function STO_GetMoremInfo ()
 
     var t =  CSV_Parse_Direct (s_init);
     return t ;
+
+}
+
+function STO_GetMoremInfo ()
+{
+    var csvPathArray = PATH_GetPathInDirectory (PATH_GetWorkPath()+"orderlist/", "ExportOrderList*.csv");
+    var array = new Array (); 
+
+    for (var i = 0 ; i < csvPathArray.length; i ++){
+        var t = STO_GetMoremSlavesInfo (csvPathArray[i].fsName);
+        var x;
+        for (x in t)
+            array[x] = t[x];
+    }
+    return array;
 }
 
 function work ()
@@ -109,8 +124,8 @@ function work ()
     }
     
     CSV_Build(stoLoneData,stoLoneDataPath);
-
 /*
+
     for (x in morem)
     {
         if (typeof (sto[x]) == "undefined"){
@@ -125,7 +140,7 @@ function work ()
         }
         
     }
-    CSV_Build(moremLoneData,moremLoneDataPath);
-*/
+    CSV_Build(moremLoneData,moremLoneDataPath);*/
+
 }
  work();

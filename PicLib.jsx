@@ -20,6 +20,12 @@ function PicLib_GetPicLabPath()
 
 }
 
+function PicLib_GetSummaryPath()
+{
+    return File.decode(GetParam("PICLIB_SUMMARY_PATH"));
+
+}
+
 
 function PicLib_GetElementTemplate ()
 {
