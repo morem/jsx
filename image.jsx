@@ -39,10 +39,20 @@ function GetPDFParam()
 
 }
 
+function GetEPSParam()
+{
+	var param = new EPSSaveOptions();
+	param.embedColorProfile = false;
+	param.encoding = SaveEncoding.ASCII;
+	return param;
+
+}
+
 function GetSaveParam (type)
 {
 	if (CompareString("tif",type))return GetTIFFParam();
 	if (CompareString("pdf",type))return GetPDFParam();
+	if (CompareString("eps",type))return GetEPSParam();
 }
 	
 
