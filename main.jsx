@@ -858,6 +858,8 @@ InitAll ();
 var temp =0;
 
 
+
+
 //BuildDetailByConfig()
 if (temp == 1)
     temp22 ();

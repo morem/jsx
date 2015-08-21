@@ -31,6 +31,6 @@ function testFile ()
 }
 
 
-testFile ();
+LOG_Init ();
 
-
+LOG_Error (OpenDocumentType.TIFF);

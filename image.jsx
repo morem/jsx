@@ -53,6 +53,7 @@ function GetSaveParam (type)
 	if (CompareString("tif",type))return GetTIFFParam();
 	if (CompareString("pdf",type))return GetPDFParam();
 	if (CompareString("eps",type))return GetEPSParam();
+	if (CompareString("jpg",type))return GetJPGParam();
 }
 	
 

@@ -275,8 +275,9 @@ function duplicateFromNew_Ext (selfDoc, refLayer, placeMent ,srcPath, layerName)
 function duplicateLayerFrom (targetDoc, targetLayerName, srcDoc, srcLayerName)
 {
     srcDoc.artLayers[srcLayerName].duplicate(targetDoc, ElementPlacement.PLACEATBEGINNING);
+    app.activeDocument = targetDoc;
     targetDoc.activeLayer.name = targetLayerName;
-    return true;
+    return targetDoc.activeLayer;
     
 }
 
