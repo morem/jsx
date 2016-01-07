@@ -81,9 +81,9 @@ function MH_GetCaseSharp (picPath){
     return doc;
 }
 
-function MH_OpenTemplate(picPath, nameOrID)
+function MH_OpenTemplate(picPath, nameOrID, templatePath)
 {
-    var templatePath = GetParam ("NEW_TEMPLATE_DIR") + "head_modul.tif";
+    //var templatePath = GetParam ("NEW_TEMPLATE_DIR") + "head_modul.tif";
     var templateFile = new File (templatePath);
     var doc = app.open(templateFile);
     var picDoc = MH_GetCaseSharp (picPath);
@@ -162,10 +162,29 @@ function work()
     for ( k = 0; k < d.length; k ++){
         var m = d[k];
         try{
-            doc = MH_OpenTemplate (m["srcPath"], m["nameOrID"]);
+            doc = MH_OpenTemplate (m["srcPath"], m["nameOrID"], GetParam ("NEW_TEMPLATE_DIR") + "head_modul.tif");
             
             var targetFile = new File (m["targetPath"]);
             doc.saveAs(targetFile, GetSaveParam ("jpg"), true);
+            CloseDoc(doc);
+            }
+       catch(err){
+            continue;}
+    }
+}
+
+function workCaseOnly()
+{
+    var d;
+    d = MH_GetCaseInfo ();
+    var k;
+    for ( k = 0; k < d.length; k ++){
+        var m = d[k];
+        try{
+            doc = MH_OpenTemplate (m["srcPath"], m["nameOrID"], GetParam ("NEW_TEMPLATE_DIR") + "case_modul.tif");
+            
+            var targetFile = new File (m["targetPath"]);
+            doc.saveAs(targetFile, GetSaveParam ("tif"), true);
             CloseDoc(doc);
             }
        catch(err){
